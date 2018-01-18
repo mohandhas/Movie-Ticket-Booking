@@ -1,5 +1,6 @@
 package com.mtr.daoimpl;
 
+
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
@@ -150,56 +151,143 @@ public class AdminDAOImpl implements AdminDAO{
 		}
 		if(checker==null)
 		{
+			logger.error("No theatres Found");
 			return null;
 		}
+		logger.info("Sending the List of Theatres");
 		return checker;
 	}
 
 	public List<Movie> getAllMovies() {
-		String sql="SELECT * FROM MOVIE";
-		return jdbcTemplate.query(sql, new MovieMapper());
+		
+		List<Movie> checker;
+		try {
+			String sql="SELECT * FROM MOVIE";
+			checker = jdbcTemplate.query(sql, new MovieMapper());
+		}
+		catch(Exception e)
+		{
+			checker=null;
+		}
+		
+		if(checker == null)
+		{
+			logger.error("No Movies Found!");
+			return null;
+		}
+		logger.info("Sending List Of Movies");
+		return checker;
 	}
 
 	private Movie getDuration(int id)
 	{
-		String sql = "SELECT * FROM MOVIE WHERE MOVIE_ID=?";
-		return jdbcTemplate.queryForObject(sql, new Object[] {id}, new MovieMapper());
+		Movie checker;
+		try
+		{
+			String sql = "SELECT * FROM MOVIE WHERE MOVIE_ID=?";
+			checker = jdbcTemplate.queryForObject(sql, new Object[] {id}, new MovieMapper());
+		}
+		catch (Exception e) {
+			checker = null;
+		}
+		
+		if(checker == null)
+		{
+			logger.error("Movie not Found!");
+			return null;
+		}
+		logger.info("Returning Movie Object!");
+		return checker;
 	}
 	
-	public void addMovieInTheatre(TheatreMovie theatreMovie) {
+	public boolean addMovieInTheatre(TheatreMovie theatreMovie) {
+		int checker;
+		try{
+			Time endTime=theatreMovie.getStartTime();
+			Movie temp= getDuration(theatreMovie.getMovieId());
+			if(temp==null)
+			{
+				logger.error("movie not added sucessfully!");
+				return false;
+			}
+			long duration = temp.getDuration();
+			LocalTime localtime = endTime.toLocalTime();
+			localtime = localtime.plusMinutes(duration);
+			Time finalTime = java.sql.Time.valueOf(localtime);
+			
+			String sql = "INSERT INTO THEATRE_MOVIE(THEATRE_ID, MOVIE_ID, SCREEN,DATE_FROM, DATE_TO,TIME_FROM,TIME_TO) VALUES(?,?,?,?,?,?,?)";
+			checker = jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime);
+		}
+		catch(Exception e)
+		{
+			checker = 0;
+		}
 		
-		Time endTime=theatreMovie.getStartTime();
-		Movie temp= getDuration(theatreMovie.getMovieId());
-		long duration = temp.getDuration();
-		LocalTime localtime = endTime.toLocalTime();
-		localtime = localtime.plusMinutes(duration);
-		Time finalTime = java.sql.Time.valueOf(localtime);
-		
-		String sql = "INSERT INTO THEATRE_MOVIE(THEATRE_ID, MOVIE_ID, SCREEN,DATE_FROM, DATE_TO,TIME_FROM,TIME_TO) VALUES(?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime);
-
+		if(checker == 0)
+		{
+			logger.error("movie not added sucessfully!");
+			return false;
+		}
+		logger.info("Movie Added Sucessfully!");
+		return true;
 	}
 
 	@Override
 	public List<MoviesListInTheatre> listMoviesInTheatre(GetMoviesInTheatre getMoviesInTheatre) {
-
-		String sql = "SELECT * FROM MOVIE JOIN THEATRE_MOVIE ON MOVIE.MOVIE_ID = THEATRE_MOVIE.MOVIE_ID "
-				+ "WHERE THEATRE_MOVIE.THEATRE_ID =? and date_from<=? and date_to>=? "
-				+ "ORDER BY MOVIE_NAME ASC";
-		return jdbcTemplate.query(sql, new Object[] {getMoviesInTheatre.getTheatreId(),getMoviesInTheatre.getShowDate(),getMoviesInTheatre.getShowDate()}, new MoviesListInTheatreMapper());
+		List<MoviesListInTheatre> checker;
+		try {
+			//List<Time> time = new ArrayList<Time>();
+			
+			String sql = "SELECT * FROM MOVIE JOIN THEATRE_MOVIE ON MOVIE.MOVIE_ID = THEATRE_MOVIE.MOVIE_ID "
+					+ "WHERE THEATRE_MOVIE.THEATRE_ID =? and date_from<=? and date_to>=? "
+					+ "ORDER BY MOVIE_NAME ASC";
+			checker = jdbcTemplate.query(sql, new Object[] {getMoviesInTheatre.getTheatreId(),getMoviesInTheatre.getShowDate(),getMoviesInTheatre.getShowDate()}, new MoviesListInTheatreMapper());
+//			for(int i=0;i<checker.size();i++)
+//			{
+//				time.add(checker.get(i).getShowTime());
+//	
+//			}
+		}
+		catch(Exception e)
+		{
+			checker = null;
+		}
+		
+		if(checker == null)
+		{
+			logger.error("No movies found!");
+			return null;
+		}
+		logger.info("The Selected Theatre contains the below movies");
+		return checker;
 	}
 
 	@Override
-	public void editMovieInTheatre(TheatreMovie theatreMovie) {
-		Time endTime=theatreMovie.getStartTime();
-		Movie temp= getDuration(theatreMovie.getMovieId());
-		long duration = temp.getDuration();
-		LocalTime localtime = endTime.toLocalTime();
-		localtime = localtime.plusMinutes(duration);
-		Time finalTime = java.sql.Time.valueOf(localtime);
-
-		String sql = "UPDATE THEATRE_MOVIE SET THEATRE_ID=?, MOVIE_ID=?, SCREEN=?,DATE_FROM=?, DATE_TO=?,TIME_FROM=?,TIME_TO=? WHERE THEATRE_MOVIE_ID=?";
-		jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime,theatreMovie.getTheatreMovieId());	
+	public boolean editMovieInTheatre(TheatreMovie theatreMovie) {
+		int checker=0;
+		try
+		{
+			Time endTime=theatreMovie.getStartTime();
+			Movie temp= getDuration(theatreMovie.getMovieId());
+			long duration = temp.getDuration();
+			LocalTime localtime = endTime.toLocalTime();
+			localtime = localtime.plusMinutes(duration);
+			Time finalTime = java.sql.Time.valueOf(localtime);
+	
+			String sql = "UPDATE THEATRE_MOVIE SET THEATRE_ID=?, MOVIE_ID=?, SCREEN=?,DATE_FROM=?, DATE_TO=?,TIME_FROM=?,TIME_TO=? WHERE THEATRE_MOVIE_ID=?";
+			checker=jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime,theatreMovie.getTheatreMovieId());	
 		}
+		catch (Exception e) {
+			checker=0;
+		}
+		
+		if(checker==0)
+		{
+			logger.error("Enter proper details! Cannot edit!");
+			return false;
+		}
+		logger.info("Edited movie in particular theatre");
+		return true;
+	}
 
 }

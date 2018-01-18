@@ -1,6 +1,8 @@
 package com.mtr.pojo;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MoviesListInTheatre {
 	private int movieId;
@@ -10,14 +12,25 @@ public class MoviesListInTheatre {
 	private int duration;
 	private int theatreMovieId;
 	private int screen;
-	private Time showTime;
+	private List<Time> showTime= new ArrayList<>();
 	
 	public MoviesListInTheatre() {
 		super();
 	}
 
+	
+	
+	@Override
+	public String toString() {
+		return "MoviesListInTheatre [movieId=" + movieId + ", movieName=" + movieName + ", rating=" + rating
+				+ ", ratingCount=" + ratingCount + ", duration=" + duration + ", theatreMovieId=" + theatreMovieId
+				+ ", screen=" + screen + "]";
+	}
+
+
+
 	public MoviesListInTheatre(int movieId, String movieName, double rating, int ratingCount, int duration,
-			int theatreMovieId, int screen, Time showTime) {
+			int theatreMovieId, int screen, List<Time> showTime) {
 		super();
 		this.movieId = movieId;
 		this.movieName = movieName;
@@ -29,12 +42,19 @@ public class MoviesListInTheatre {
 		this.showTime = showTime;
 	}
 
-	@Override
-	public String toString() {
-		return "MoviesInTheatreList [movieId=" + movieId + ", movieName=" + movieName + ", rating=" + rating
-				+ ", ratingCount=" + ratingCount + ", duration=" + duration + ", theatreMovieId=" + theatreMovieId
-				+ ", screen=" + screen + ", showTime=" + showTime + "]";
+
+
+	public List<Time> getShowTime() {
+		return showTime;
 	}
+
+
+
+	public void setShowTime(List<Time> showTime) {
+		this.showTime = showTime;
+	}
+
+
 
 	public int getMovieId() {
 		return movieId;
@@ -90,14 +110,6 @@ public class MoviesListInTheatre {
 
 	public void setScreen(int screen) {
 		this.screen = screen;
-	}
-
-	public Time getShowTime() {
-		return showTime;
-	}
-
-	public void setShowTime(Time showTime) {
-		this.showTime = showTime;
 	}
 	
 	

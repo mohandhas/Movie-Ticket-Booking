@@ -24,10 +24,10 @@ public interface AdminDAO {
 	
 	public List<Movie> getAllMovies();
 	
-	public void addMovieInTheatre(TheatreMovie theatreMovie);
+	public boolean addMovieInTheatre(TheatreMovie theatreMovie);
 	
 	public List<MoviesListInTheatre> listMoviesInTheatre(GetMoviesInTheatre getMoviesInTheatre);
 
-	public void editMovieInTheatre(TheatreMovie theatreMovie);
+	public boolean editMovieInTheatre(TheatreMovie theatreMovie);
 
 }

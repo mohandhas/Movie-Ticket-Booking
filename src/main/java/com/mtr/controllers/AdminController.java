@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mtr.customizedexceptions.CustomizedBadRequestException;
 import com.mtr.customizedexceptions.CustomizedNotFoundException;
 import com.mtr.dao.AdminDAO;
 import com.mtr.pojo.GetMoviesInTheatre;
@@ -28,15 +29,11 @@ public class AdminController {
 	@RequestMapping(value= "adminLogin", method=RequestMethod.POST)
 	public void validateAdmin(@RequestParam("id") String id,@RequestParam("password") String password)
 	{		
-			if(adminDAO.login(id, password))
+			if(!adminDAO.login(id, password))
 			{
-				System.out.println("YES"); 
+				throw new CustomizedBadRequestException("USER NAME OR PASSWORD INVALID");
 			}
-			else
-			{
-				System.out.println("NO");
-
-			}
+			
 	}
 	
 	@RequestMapping(value= "addTheatre", method=RequestMethod.POST)
@@ -44,38 +41,59 @@ public class AdminController {
 	{
 		if(!adminDAO.addTheatre(theatre))
 		{
-			throw new CustomizedNotFoundException("Check your details");
+			throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
 		}
 	}
 	
 	@RequestMapping(value= "addMovie", method=RequestMethod.POST)
 	public void addMovie(@RequestBody Movie movie)
 	{
-		adminDAO.addMovie(movie);
+		if(!adminDAO.addMovie(movie))
+		{
+			throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
+		}
 	}
 	
 	@RequestMapping(value= "listTheatres", method=RequestMethod.GET)
 	public List<Theatre> listTheatres()
 	{
-		return adminDAO.getAllTheatres();
+			List<Theatre> list=adminDAO.getAllTheatres();
+			if(list==null)
+			{
+				throw new CustomizedNotFoundException("No theatres found");
+			}
+			return list;
 	}
 	
 	@RequestMapping(value= "listMovies", method=RequestMethod.GET)
 	public List<Movie> listMovies()
 	{
-		return adminDAO.getAllMovies();
+			List<Movie> list = adminDAO.getAllMovies();
+			if(list==null)
+			{
+				throw new CustomizedNotFoundException("No movies found");
+			}
+			return list;
 	}
 	
 	@RequestMapping(value= "addMovieInTheatre", method=RequestMethod.POST)
 	public void addMovieInTheatre(@RequestBody TheatreMovie theatreMovie)
 	{
-		 adminDAO.addMovieInTheatre(theatreMovie);
+		 	if(adminDAO.addMovieInTheatre(theatreMovie))
+		 	{
+				throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
+		 	}
 	}
 	
 	@RequestMapping(value= "getMovieInTheatre", method=RequestMethod.POST)
 	public List<MoviesListInTheatre> listMoviesInTheatre(@RequestBody GetMoviesInTheatre getMoviesInTheatre)
 	{
-		 return adminDAO.listMoviesInTheatre(getMoviesInTheatre);
+		List<MoviesListInTheatre> list=adminDAO.listMoviesInTheatre(getMoviesInTheatre);
+			if(list==null)
+			{
+				throw new CustomizedNotFoundException("No movies found");
+			}
+			return list;
 	}
 	
 	@RequestMapping(value= "editMovieInTheatre", method=RequestMethod.POST)
