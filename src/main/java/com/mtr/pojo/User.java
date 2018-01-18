@@ -10,7 +10,7 @@ public class User {
 	private String email;
 	private String phone;
 	private String password;
-	private List<Integer> favoriteGenre = new ArrayList<>();
+	private List<Integer> favoriteGenre = new ArrayList<Integer>();
 	
 	public User() {
 		super();

@@ -180,7 +180,7 @@ public class AdminDAOImpl implements AdminDAO{
 
 	}
 
-	@Override
+
 	public List<MoviesListInTheatre> listMoviesInTheatre(GetMoviesInTheatre getMoviesInTheatre) {
 
 		String sql = "SELECT * FROM MOVIE JOIN THEATRE_MOVIE ON MOVIE.MOVIE_ID = THEATRE_MOVIE.MOVIE_ID "
@@ -189,7 +189,7 @@ public class AdminDAOImpl implements AdminDAO{
 		return jdbcTemplate.query(sql, new Object[] {getMoviesInTheatre.getTheatreId(),getMoviesInTheatre.getShowDate(),getMoviesInTheatre.getShowDate()}, new MoviesListInTheatreMapper());
 	}
 
-	@Override
+
 	public void editMovieInTheatre(TheatreMovie theatreMovie) {
 		Time endTime=theatreMovie.getStartTime();
 		Movie temp= getDuration(theatreMovie.getMovieId());

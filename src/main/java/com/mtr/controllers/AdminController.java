@@ -17,8 +17,6 @@ import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.TheatreMovie;
 
-import javassist.NotFoundException;
-
 @RestController
 public class AdminController {
 	
