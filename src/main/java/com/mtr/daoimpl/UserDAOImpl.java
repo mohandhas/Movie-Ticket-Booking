@@ -2,7 +2,6 @@ package com.mtr.daoimpl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;

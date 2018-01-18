@@ -90,19 +90,34 @@ public class AdminDAOImpl implements AdminDAO{
 
 	private Movie findMovieId(String name, int duration)
 	{
-		String sql = "SELECT * FROM MOVIE WHERE MOVIE_NAME=? AND MOVIE_DURATION=?";
-		return jdbcTemplate.queryForObject(sql, new Object[] {name, duration}, new MovieMapper());
-
+		Movie checker;
+		try {
+			String sql = "SELECT * FROM MOVIE WHERE MOVIE_NAME=? AND MOVIE_DURATION=?";
+			checker = jdbcTemplate.queryForObject(sql, new Object[] {name, duration}, new MovieMapper());
+			logger.info("Movie ID found");
+		}
+		catch(Exception e)
+		{
+			logger.error("More than one movie found");
+			checker=null;
+		}
+		return checker;
 	}
 	
-	public void addMovie(Movie movie) {
+	public boolean addMovie(Movie movie) {
 		
 		int checker;
 		try {
 			String sql = "INSERT INTO MOVIE(MOVIE_NAME, MOVIE_DURATION) VALUES(?,?)";
-			jdbcTemplate.update(sql,movie.getName(),movie.getDuration());
+			checker = jdbcTemplate.update(sql,movie.getName(),movie.getDuration());
 			Movie getId= findMovieId(movie.getName(), movie.getDuration());
 		
+			if(getId==null)
+			{
+				logger.error("Movie Not addedSuccessfully!");
+				return false;
+			}
+			
 			for(int i=0;i<movie.getGenre().size();i++)
 			{
 				String sql2 = "INSERT INTO GENRE_MOVIE(MOVIE_ID, GENRE_ID) VALUES(?,?)";
@@ -111,13 +126,33 @@ public class AdminDAOImpl implements AdminDAO{
 		}
 		catch(Exception e)
 		{
-			
+			checker=0;
 		}
+		
+		if(checker==0)
+		{
+			logger.error("Movie Not addedSuccessfully!");
+			return false;
+		}
+		logger.info("Movie Added Successfully!");
+		return true;
 	}
 
 	public List<Theatre> getAllTheatres() {
-		String sql="SELECT * FROM THEATRE";
-		return jdbcTemplate.query(sql, new TheatreMapper());
+		List<Theatre> checker;
+		try
+		{
+			String sql="SELECT * FROM THEATRE";
+			checker = jdbcTemplate.query(sql, new TheatreMapper());
+		}
+		catch (Exception e) {
+			checker = null;
+		}
+		if(checker==null)
+		{
+			return null;
+		}
+		return checker;
 	}
 
 	public List<Movie> getAllMovies() {

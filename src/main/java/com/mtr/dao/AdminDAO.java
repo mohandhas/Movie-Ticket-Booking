@@ -18,7 +18,7 @@ public interface AdminDAO {
 	
 	public boolean addTheatre(Theatre theatre);
 	
-	public void addMovie(Movie movie);
+	public boolean addMovie(Movie movie);
 	
 	public List<Theatre> getAllTheatres();
 	
