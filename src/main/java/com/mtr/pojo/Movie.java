@@ -1,16 +1,16 @@
 package com.mtr.pojo;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Movie {
 	
-	public int id;
-	public String movie;
-	public int duration;
-	public String genere1;
-	public String genere2;
-	public String genere3;
-	public int ratingCount;
-	public double rating;
+	private int id;
+	private String name;
+	private int duration;
+	private List<Integer> genre= new ArrayList<Integer>();
+	private int ratingCount;
+	private double rating;
 		
 	public Movie() {
 		super();
@@ -18,15 +18,12 @@ public class Movie {
 
 	
 	
-	public Movie(int id, String movie, int duration, String genere1, String genere2, String genere3, int ratingCount,
-			double rating) {
+	public Movie(int id, String name, int duration, List<Integer> genre, int ratingCount, double rating) {
 		super();
 		this.id = id;
-		this.movie = movie;
+		this.name = name;
 		this.duration = duration;
-		this.genere1 = genere1;
-		this.genere2 = genere2;
-		this.genere3 = genere3;
+		this.genre = genre;
 		this.ratingCount = ratingCount;
 		this.rating = rating;
 	}
@@ -35,23 +32,37 @@ public class Movie {
 
 	@Override
 	public String toString() {
-		return "Movie [id=" + id + ", movie=" + movie + ", duration=" + duration + ", genere1=" + genere1 + ", genere2="
-				+ genere2 + ", genere3=" + genere3 + ", ratingCount=" + ratingCount + ", rating=" + rating + "]";
+		return "Movie [id=" + id + ", name=" + name + ", duration=" + duration + ", genre=" + genre + ", ratingCount="
+				+ ratingCount + ", rating=" + rating + "]";
 	}
 
+
+
+	public List<Integer> getGenre() {
+		return genre;
+	}
+
+	public void setGenre(List<Integer> genre) {
+		this.genre = genre;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 
 	public int getDuration() {
 		return duration;
 	}
 
-
-
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-
-
 
 	public int getId() {
 		return id;
@@ -76,38 +87,5 @@ public class Movie {
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
-
-	public String getMovie() {
-		return movie;
-	}
-
-	public void setMovie(String movie) {
-		this.movie = movie;
-	}
-
-	public String getGenere1() {
-		return genere1;
-	}
-
-	public void setGenere1(String genere1) {
-		this.genere1 = genere1;
-	}
-
-	public String getGenere2() {
-		return genere2;
-	}
-
-	public void setGenere2(String genere2) {
-		this.genere2 = genere2;
-	}
-
-	public String getGenere3() {
-		return genere3;
-	}
-
-	public void setGenere3(String genere3) {
-		this.genere3 = genere3;
-	}
-	
 	
 }

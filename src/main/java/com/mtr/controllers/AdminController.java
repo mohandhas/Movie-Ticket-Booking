@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mtr.dao.AdminDAO;
+import com.mtr.pojo.GetMoviesInTheatre;
 import com.mtr.pojo.Movie;
+import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.TheatreMovie;
 
@@ -20,7 +22,7 @@ public class AdminController {
 	@Autowired
 	AdminDAO adminDAO;
 	
-	@RequestMapping(value= "loginAdmin", method=RequestMethod.POST)
+	@RequestMapping(value= "adminLogin", method=RequestMethod.POST)
 	public void validateAdmin(@RequestParam("id") String id,@RequestParam("password") String password)
 	{		
 			if(adminDAO.login(id, password))
@@ -63,6 +65,14 @@ public class AdminController {
 	{
 		 adminDAO.addMovieInTheatre(theatreMovie);
 	}
+	
+	@RequestMapping(value= "getMovieInTheatre", method=RequestMethod.POST)
+	public List<MoviesListInTheatre> listMoviesInTheatre(@RequestBody GetMoviesInTheatre getMoviesInTheatre)
+	{
+		 return adminDAO.listMoviesInTheatre(getMoviesInTheatre);
+	}
+	
+	
 }
 
 

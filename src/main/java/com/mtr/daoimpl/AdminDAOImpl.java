@@ -11,9 +11,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.mtr.dao.AdminDAO;
 import com.mtr.mapper.AdminMapper;
 import com.mtr.mapper.MovieMapper;
+import com.mtr.mapper.MoviesListInTheatreMapper;
 import com.mtr.mapper.TheatreMapper;
 import com.mtr.pojo.Admin;
+import com.mtr.pojo.GetMoviesInTheatre;
 import com.mtr.pojo.Movie;
+import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.TheatreMovie;
 
@@ -55,13 +58,32 @@ public class AdminDAOImpl implements AdminDAO{
 	public void addTheatre(Theatre theatre) {
 
 		String sql = "INSERT INTO THEATRE(THEATRE_NAME, LATITUDE, LONGITUDE,NO_OF_SCREENS) VALUES(?,?,?,?)";
-		jdbcTemplate.update(sql,theatre.getName(),theatre.getLatitudes(),theatre.getLongitudes(),theatre.getNumberOfScreens());
+		jdbcTemplate.update(sql,theatre.getName(),theatre.getLatitude(),theatre.getLongitude(),theatre.getNumberOfScreen());
 	}
 
+	private Movie findMovieId(String name, int duration)
+	{
+		String sql = "SELECT * FROM MOVIE WHERE MOVIE_NAME=? AND MOVIE_DURATION=?";
+		return jdbcTemplate.queryForObject(sql, new Object[] {name, duration}, new MovieMapper());
+
+	}
+	
 	public void addMovie(Movie movie) {
 	
-		String sql = "INSERT INTO MOVIE(MOVIE_NAME, MOVIE_DURATION, GENRE1,GENRE2,GENRE3) VALUES(?,?,?,?,?)";
-		jdbcTemplate.update(sql,movie.getMovie(),movie.getDuration(),movie.getGenere1(),movie.getGenere2(),movie.getGenere3());
+		System.out.println(movie);
+
+		String sql = "INSERT INTO MOVIE(MOVIE_NAME, MOVIE_DURATION) VALUES(?,?)";
+		jdbcTemplate.update(sql,movie.getName(),movie.getDuration());
+		
+		Movie getId= findMovieId(movie.getName(), movie.getDuration());
+		System.out.println(getId);
+
+		
+		for(int i=0;i<movie.getGenre().size();i++)
+		{
+			String sql2 = "INSERT INTO GENRE_MOVIE(MOVIE_ID, GENRE_ID) VALUES(?,?)";
+			jdbcTemplate.update(sql2,getId.getId(),movie.getGenre().get(i));
+		}
 	}
 
 	public List<Theatre> getAllTheatres() {
@@ -78,18 +100,34 @@ public class AdminDAOImpl implements AdminDAO{
 	{
 		String sql = "SELECT * FROM MOVIE WHERE MOVIE_ID=?";
 		return jdbcTemplate.queryForObject(sql, new Object[] {id}, new MovieMapper());
-
 	}
+	
 	public void addMovieInTheatre(TheatreMovie theatreMovie) {
 		
 		Time endTime=theatreMovie.getStartTime();
 		Movie temp= getDuration(theatreMovie.getMovieId());
-		int duration = temp.getDuration();
-		 LocalTime localtime = endTime.toLocalTime();
-		 endTime = new java.sql.Time(localtime.plusMinutes(duration));
+		long duration = temp.getDuration();
+		LocalTime localtime = endTime.toLocalTime();
+		localtime = localtime.plusMinutes(duration);
+		Time finalTime = java.sql.Time.valueOf(localtime);
+		
 		String sql = "INSERT INTO THEATRE_MOVIE(THEATRE_ID, MOVIE_ID, SCREEN,DATE_FROM, DATE_TO,TIME_FROM,TIME_TO) VALUES(?,?,?,?,?,?,?)";
-		jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),theatreMovie.getEndTime());
+		jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime);
 
+	}
+
+	@Override
+	public List<MoviesListInTheatre> listMoviesInTheatre(GetMoviesInTheatre getMoviesInTheatre) {
+
+		String sql = "SELECT * FROM MOVIE JOIN THEATRE_MOVIE ON MOVIE.MOVIE_ID = THEATRE_MOVIE.MOVIE_ID "
+				+ "WHERE THEATRE_MOVIE.THEATRE_ID =? and date_from<=? and date_to>=? "
+				+ "ORDER BY MOVIE_NAME ASC";
+		return jdbcTemplate.query(sql, new Object[] {getMoviesInTheatre.getTheatreId(),getMoviesInTheatre.getShowDate(),getMoviesInTheatre.getShowDate()}, new MoviesListInTheatreMapper());
+	}
+
+	@Override
+	public void editMovieInTheatre(TheatreMovie theatreMovie) {
+		String sql = "INSERT INTO THEATRE(THEATRE_NAME, LATITUDE, LONGITUDE,NO_OF_SCREENS) VALUES(?,?,?,?)";
 	}
 
 }

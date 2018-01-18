@@ -1,8 +1,8 @@
 package com.mtr.pojo;
 
 public class Admin {
-	public String id;
-	public String password;
+	private String id;
+	private String password;
 	
 	public Admin() {
 		super();

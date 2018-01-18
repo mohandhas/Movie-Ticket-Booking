@@ -8,8 +8,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mtr.dao.UserDAO;
 import com.mtr.mapper.MovieMapper;
+import com.mtr.mapper.StringMapper;
 import com.mtr.mapper.UserMapper;
+import com.mtr.pojo.BookTickets;
 import com.mtr.pojo.Movie;
+import com.mtr.pojo.Ratings;
+import com.mtr.pojo.Ticket;
 import com.mtr.pojo.User;
 
 public class UserDAOImpl implements UserDAO {
@@ -53,6 +57,29 @@ public class UserDAOImpl implements UserDAO {
 	}
 	public List<Movie> getMoviesInTheatre(int id) {
 		return null;
+	}
+	
+	public void addTicket(Ticket ticket) {
 		
 	}
+	
+	private Movie getMovie(int id)
+	{
+		String sql = "SELECT * FROM MOVIE WHERE MOVIE_ID=?";
+		return jdbcTemplate.queryForObject(sql, new Object[] {id}, new MovieMapper());
+	}
+	
+	public void updateRatings(Ratings rating) {
+		Movie movie = getMovie(rating.getMovieId());
+		int ratingHead = movie.getRatingCount();
+		double ratings = ((movie.getRating()*ratingHead)+ rating.getRating())/(ratingHead+1);
+		
+		String sql = "UPDATE MOVIE SET RATING_HEAD=? , RATING_COUNT=? WHERE MOVIE_ID=?";
+		jdbcTemplate.update(sql,ratingHead+1,ratings,rating.getMovieId());
+		
+	}
+	public List<String> getBookedTickets(BookTickets availableTickets) {
+		String sql = "SELECT SEAT_NO FROM TICKET_BOOKING WHERE THEATRE_MOVIE_ID=? AND SHOW_TIME=? AND DATE=?";
+		 return jdbcTemplate.query(sql, new Object[] {availableTickets.getTheatreMovieId(),availableTickets.getShowTime(), availableTickets.getShowDate()}, new StringMapper());
+		}
 }

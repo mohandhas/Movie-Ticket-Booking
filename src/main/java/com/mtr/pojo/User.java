@@ -1,36 +1,42 @@
 package com.mtr.pojo;
 
+import java.util.Arrays;
+
 public class User {
 
-	public String id;
-	public String name;
-	public String email;
-	public String phone;
-	public String password;
-	public String favoriteGenere;
-	
+	private String id;
+	private String name;
+	private String email;
+	private String phone;
+	private String password;
+	private int[] favoriteGenre;
 	
 	public User() {
 		super();
 	}
 	
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", password=" + password
-				+ ", favoriteGenere=" + favoriteGenere + "]";
-	}
-
-	public User(String id, String name, String email, String phone, String password, String favoriteGenere) {
+	public User(String id, String name, String email, String phone, String password, int[] favoriteGenere) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.password = password;
-		this.favoriteGenere = favoriteGenere;
+		this.favoriteGenre = favoriteGenere;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", password=" + password
+				+ ", favoriteGenere=" + Arrays.toString(favoriteGenre) + "]";
+	}
+
+	public int[] getFavoriteGenere() {
+		return favoriteGenre;
+	}
+	public void setFavoriteGenere(int[] favoriteGenere) {
+		this.favoriteGenre = favoriteGenere;
+	}
 	public String getId() {
 		return id;
 	}
@@ -71,11 +77,5 @@ public class User {
 		this.password = password;
 	}
 
-	public String getFavoriteGenere() {
-		return favoriteGenere;
-	}
-
-	public void setFavoriteGenere(String favoriteGenere) {
-		this.favoriteGenere = favoriteGenere;
-	}
+	
 }

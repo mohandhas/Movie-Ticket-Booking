@@ -1,18 +1,18 @@
-package com.mtr.pojo;
+	package com.mtr.pojo;
 
 import java.sql.Time;
 import java.sql.Date;
 
 public class TheatreMovie {
 
-	public int theatreMovieId;
-	public int theatreId;
-	public int movieId;
-	public int screen;
-	public Date startDate;
-	public Date endDate;
-	public Time startTime;
-	public Time endTime;
+	private int theatreMovieId;
+	private int theatreId;
+	private int movieId;
+	private int screen;
+	private Date startDate;
+	private Date endDate;
+	private Time startTime;
+	private Time endTime;
 	
 	
 	public TheatreMovie() {

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mtr.daoimpl.UserDAOImpl;
+import com.mtr.pojo.BookTickets;
 import com.mtr.pojo.Movie;
+import com.mtr.pojo.Ratings;
+import com.mtr.pojo.Ticket;
 import com.mtr.pojo.User;
 
 
@@ -60,4 +62,21 @@ public class UserController {
 			
 	}
 	
+	public void addTicket(@RequestBody Ticket ticket)
+	{		
+			userDAOImpl.addTicket(ticket);
+	}
+	
+	@RequestMapping(value= "ratings", method=RequestMethod.POST)
+	public void ratings(@RequestBody Ratings rating)
+	{
+		System.out.println(rating);
+		userDAOImpl.updateRatings(rating);
+	}
+	
+	@RequestMapping(value= "availableTickets", method=RequestMethod.POST)
+	public List<String> getAvailableTickets(@RequestBody BookTickets availableTickets)
+	{
+		return userDAOImpl.getBookedTickets(availableTickets);
+	}
 }

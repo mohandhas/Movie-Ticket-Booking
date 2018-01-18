@@ -17,7 +17,6 @@ public class UserMapper implements org.springframework.jdbc.core.RowMapper<User>
 		user.setEmail(rs.getString("EMAIL"));
 		user.setPassword(rs.getString("PASSWORD"));
 		user.setPhone(rs.getString("PHONE"));
-		user.setFavoriteGenere(rs.getString("GENRE"));
 		return user;
 	}
 

@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.mtr.pojo.GetMoviesInTheatre;
 import com.mtr.pojo.Movie;
+import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.TheatreMovie;
 
@@ -23,4 +25,9 @@ public interface AdminDAO {
 	public List<Movie> getAllMovies();
 	
 	public void addMovieInTheatre(TheatreMovie theatreMovie);
+	
+	public List<MoviesListInTheatre> listMoviesInTheatre(GetMoviesInTheatre getMoviesInTheatre);
+
+	public void editMovieInTheatre(TheatreMovie theatreMovie);
+
 }

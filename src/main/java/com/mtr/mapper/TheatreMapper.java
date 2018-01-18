@@ -13,9 +13,9 @@ public class TheatreMapper implements org.springframework.jdbc.core.RowMapper<Th
 		Theatre theatre= new Theatre();
 		theatre.setId(rs.getInt("THEATRE_ID"));
 		theatre.setName(rs.getString("THEATRE_NAME"));
-		theatre.setLatitudes(rs.getDouble("LATITUDE"));
-		theatre.setLongitudes(rs.getDouble("LONGITUDE"));
-		theatre.setNumberOfScreens(rs.getInt("NO_OF_SCREENS"));
+		theatre.setLatitude(rs.getDouble("LATITUDE"));
+		theatre.setLongitude(rs.getDouble("LONGITUDE"));
+		theatre.setNumberOfScreen(rs.getInt("NO_OF_SCREENS"));
 		return theatre;
 	}
 
