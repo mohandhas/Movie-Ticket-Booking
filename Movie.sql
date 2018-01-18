@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
--- Host: localhost    Database: OnlineMovieTicket
+-- Host: localhost    Database: onlinemovieticket
 -- ------------------------------------------------------
--- Server version	5.7.20
+-- Server version	5.7.20-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,13 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `ADMIN`
+-- Table structure for table `admin`
 --
 
-DROP TABLE IF EXISTS `ADMIN`;
+DROP TABLE IF EXISTS `admin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ADMIN` (
+CREATE TABLE `admin` (
   `ADMIN_ID` varchar(45) NOT NULL,
   `PASSWORD` varchar(45) NOT NULL,
   PRIMARY KEY (`ADMIN_ID`)
@@ -30,23 +30,22 @@ CREATE TABLE `ADMIN` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ADMIN`
+-- Dumping data for table `admin`
 --
 
-LOCK TABLES `ADMIN` WRITE;
-/*!40000 ALTER TABLE `ADMIN` DISABLE KEYS */;
-INSERT INTO `ADMIN` VALUES ('admin','admin');
-/*!40000 ALTER TABLE `ADMIN` ENABLE KEYS */;
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `GENRE`
+-- Table structure for table `genre`
 --
 
-DROP TABLE IF EXISTS `GENRE`;
+DROP TABLE IF EXISTS `genre`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `GENRE` (
+CREATE TABLE `genre` (
   `GENRE_ID` int(11) NOT NULL AUTO_INCREMENT,
   `GENRE_NAME` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`GENRE_ID`)
@@ -54,50 +53,48 @@ CREATE TABLE `GENRE` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `GENRE`
+-- Dumping data for table `genre`
 --
 
-LOCK TABLES `GENRE` WRITE;
-/*!40000 ALTER TABLE `GENRE` DISABLE KEYS */;
-INSERT INTO `GENRE` VALUES (1,'Action'),(2,'Adventure'),(3,'Comedy'),(4,'Crime'),(5,'Drama'),(6,'Historical'),(7,'Horror'),(8,'Mystery'),(9,'Romance'),(10,'Fiction'),(11,'Social'),(12,'Thriller');
-/*!40000 ALTER TABLE `GENRE` ENABLE KEYS */;
+LOCK TABLES `genre` WRITE;
+/*!40000 ALTER TABLE `genre` DISABLE KEYS */;
+/*!40000 ALTER TABLE `genre` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `GENRE_MOVIE`
+-- Table structure for table `genre_movie`
 --
 
-DROP TABLE IF EXISTS `GENRE_MOVIE`;
+DROP TABLE IF EXISTS `genre_movie`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `GENRE_MOVIE` (
+CREATE TABLE `genre_movie` (
   `MOVIE_ID` int(11) NOT NULL,
   `GENRE_ID` int(11) NOT NULL,
   PRIMARY KEY (`MOVIE_ID`,`GENRE_ID`),
   KEY `GENRE_ID` (`GENRE_ID`),
-  CONSTRAINT `GENRE_ID` FOREIGN KEY (`GENRE_ID`) REFERENCES `GENRE` (`GENRE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `MOVIEVAL` FOREIGN KEY (`MOVIE_ID`) REFERENCES `MOVIE` (`MOVIE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `GENRE_ID` FOREIGN KEY (`GENRE_ID`) REFERENCES `genre` (`GENRE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `MOVIEVAL` FOREIGN KEY (`MOVIE_ID`) REFERENCES `movie` (`MOVIE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `GENRE_MOVIE`
+-- Dumping data for table `genre_movie`
 --
 
-LOCK TABLES `GENRE_MOVIE` WRITE;
-/*!40000 ALTER TABLE `GENRE_MOVIE` DISABLE KEYS */;
-INSERT INTO `GENRE_MOVIE` VALUES (8,1),(8,2),(8,3);
-/*!40000 ALTER TABLE `GENRE_MOVIE` ENABLE KEYS */;
+LOCK TABLES `genre_movie` WRITE;
+/*!40000 ALTER TABLE `genre_movie` DISABLE KEYS */;
+/*!40000 ALTER TABLE `genre_movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `MOVIE`
+-- Table structure for table `movie`
 --
 
-DROP TABLE IF EXISTS `MOVIE`;
+DROP TABLE IF EXISTS `movie`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `MOVIE` (
+CREATE TABLE `movie` (
   `MOVIE_ID` int(11) NOT NULL AUTO_INCREMENT,
   `MOVIE_NAME` varchar(45) NOT NULL,
   `RATING_HEAD` int(11) NOT NULL DEFAULT '0',
@@ -109,23 +106,22 @@ CREATE TABLE `MOVIE` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `MOVIE`
+-- Dumping data for table `movie`
 --
 
-LOCK TABLES `MOVIE` WRITE;
-/*!40000 ALTER TABLE `MOVIE` DISABLE KEYS */;
-INSERT INTO `MOVIE` VALUES (8,'Avengers',5,4,150);
-/*!40000 ALTER TABLE `MOVIE` ENABLE KEYS */;
+LOCK TABLES `movie` WRITE;
+/*!40000 ALTER TABLE `movie` DISABLE KEYS */;
+/*!40000 ALTER TABLE `movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `THEATRE`
+-- Table structure for table `theatre`
 --
 
-DROP TABLE IF EXISTS `THEATRE`;
+DROP TABLE IF EXISTS `theatre`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `THEATRE` (
+CREATE TABLE `theatre` (
   `THEATRE_ID` int(11) NOT NULL AUTO_INCREMENT,
   `THEATRE_NAME` varchar(45) NOT NULL,
   `LATITUDE` double unsigned NOT NULL,
@@ -137,24 +133,23 @@ CREATE TABLE `THEATRE` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `THEATRE`
+-- Dumping data for table `theatre`
 --
 
-LOCK TABLES `THEATRE` WRITE;
-/*!40000 ALTER TABLE `THEATRE` DISABLE KEYS */;
-INSERT INTO `THEATRE` VALUES (5,'PVR Inorbit- Cyberabad ?',78.36119242368159,17.42766834140634,5),(6,'pvr',78.36119242368,17.4276683414,0);
-/*!40000 ALTER TABLE `THEATRE` ENABLE KEYS */;
+LOCK TABLES `theatre` WRITE;
+/*!40000 ALTER TABLE `theatre` DISABLE KEYS */;
+/*!40000 ALTER TABLE `theatre` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `THEATRE_MOVIE`
+-- Table structure for table `theatre_movie`
 --
 
-DROP TABLE IF EXISTS `THEATRE_MOVIE`;
+DROP TABLE IF EXISTS `theatre_movie`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `THEATRE_MOVIE` (
-  `THEATRE_MOVIE_ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `theatre_movie` (
+  `THEATRE_MOVIE_ID` varchar(45) DEFAULT NULL,
   `THEATRE_ID` int(11) NOT NULL,
   `MOVIE_ID` int(11) NOT NULL,
   `SCREEN` int(11) NOT NULL,
@@ -162,60 +157,56 @@ CREATE TABLE `THEATRE_MOVIE` (
   `DATE_TO` date NOT NULL,
   `TIME_FROM` time NOT NULL,
   `TIME_TO` time DEFAULT NULL,
-  PRIMARY KEY (`THEATRE_MOVIE_ID`),
+  PRIMARY KEY (`THEATRE_ID`,`MOVIE_ID`,`DATE_FROM`,`TIME_FROM`),
   KEY `MOVIE_NAME_idx` (`MOVIE_ID`),
   KEY `THEATRE_ID_idx` (`THEATRE_ID`),
-  CONSTRAINT `MOVIE_ID` FOREIGN KEY (`MOVIE_ID`) REFERENCES `MOVIE` (`MOVIE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `THEATRE_ID` FOREIGN KEY (`THEATRE_ID`) REFERENCES `THEATRE` (`THEATRE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `THEATRE_MOVIE`
---
-
-LOCK TABLES `THEATRE_MOVIE` WRITE;
-/*!40000 ALTER TABLE `THEATRE_MOVIE` DISABLE KEYS */;
-INSERT INTO `THEATRE_MOVIE` VALUES (1,5,8,2,'2018-01-25','2018-01-28','10:00:00','12:30:00');
-/*!40000 ALTER TABLE `THEATRE_MOVIE` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Ticket_Booking`
---
-
-DROP TABLE IF EXISTS `Ticket_Booking`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Ticket_Booking` (
-  `THEATRE_MOVIE_ID` int(11) NOT NULL,
-  `EMAIL` varchar(45) NOT NULL,
-  `SEAT_NO` varchar(3) NOT NULL,
-  `DATE` date NOT NULL,
-  `SHOW_TIME` time NOT NULL,
-  KEY `THEATER_MOVIE_ID_idx` (`THEATRE_MOVIE_ID`),
-  CONSTRAINT `THEATRE_MOVIE_ID` FOREIGN KEY (`THEATRE_MOVIE_ID`) REFERENCES `THEATRE_MOVIE` (`THEATRE_MOVIE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `MOVIE_ID` FOREIGN KEY (`MOVIE_ID`) REFERENCES `movie` (`MOVIE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `THEATRE_ID` FOREIGN KEY (`THEATRE_ID`) REFERENCES `theatre` (`THEATRE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Ticket_Booking`
+-- Dumping data for table `theatre_movie`
 --
 
-LOCK TABLES `Ticket_Booking` WRITE;
-/*!40000 ALTER TABLE `Ticket_Booking` DISABLE KEYS */;
-INSERT INTO `Ticket_Booking` VALUES (1,'mohan@gmail.com','A14','2018-01-23','10:00:00');
-/*!40000 ALTER TABLE `Ticket_Booking` ENABLE KEYS */;
+LOCK TABLES `theatre_movie` WRITE;
+/*!40000 ALTER TABLE `theatre_movie` DISABLE KEYS */;
+/*!40000 ALTER TABLE `theatre_movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `USER`
+-- Table structure for table `ticket_booking`
 --
 
-DROP TABLE IF EXISTS `USER`;
+DROP TABLE IF EXISTS `ticket_booking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `USER` (
+CREATE TABLE `ticket_booking` (
+  `THEATRE_MOVIE_ID` varchar(45) NOT NULL,
+  `EMAIL` varchar(45) NOT NULL,
+  `SEAT_NO` varchar(3) NOT NULL,
+  `DATE` date NOT NULL,
+  `SHOW_TIME` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ticket_booking`
+--
+
+LOCK TABLES `ticket_booking` WRITE;
+/*!40000 ALTER TABLE `ticket_booking` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ticket_booking` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
   `USER_ID` int(11) NOT NULL AUTO_INCREMENT,
   `USER_NAME` varchar(45) NOT NULL,
   `EMAIL` varchar(45) NOT NULL,
@@ -227,48 +218,46 @@ CREATE TABLE `USER` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `USER`
+-- Dumping data for table `user`
 --
 
-LOCK TABLES `USER` WRITE;
-/*!40000 ALTER TABLE `USER` DISABLE KEYS */;
-INSERT INTO `USER` VALUES (10,'Mohandhas','mohandhas@mail.com','sathya123','975467382');
-/*!40000 ALTER TABLE `USER` ENABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `USER_GENRE`
+-- Table structure for table `user_genre`
 --
 
-DROP TABLE IF EXISTS `USER_GENRE`;
+DROP TABLE IF EXISTS `user_genre`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `USER_GENRE` (
+CREATE TABLE `user_genre` (
   `USER_ID` int(11) NOT NULL,
   `GENRE_ID` int(11) NOT NULL,
   PRIMARY KEY (`USER_ID`,`GENRE_ID`),
   KEY `GENRE_ID_idx` (`GENRE_ID`),
-  CONSTRAINT `GENREVALUE` FOREIGN KEY (`GENRE_ID`) REFERENCES `GENRE` (`GENRE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `USERVALUE` FOREIGN KEY (`USER_ID`) REFERENCES `USER` (`USER_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `GENREVALUE` FOREIGN KEY (`GENRE_ID`) REFERENCES `genre` (`GENRE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `USERVALUE` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`USER_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `USER_GENRE`
+-- Dumping data for table `user_genre`
 --
 
-LOCK TABLES `USER_GENRE` WRITE;
-/*!40000 ALTER TABLE `USER_GENRE` DISABLE KEYS */;
-INSERT INTO `USER_GENRE` VALUES (10,2),(10,3),(10,5);
-/*!40000 ALTER TABLE `USER_GENRE` ENABLE KEYS */;
+LOCK TABLES `user_genre` WRITE;
+/*!40000 ALTER TABLE `user_genre` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_genre` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'OnlineMovieTicket'
+-- Dumping events for database 'onlinemovieticket'
 --
 
 --
--- Dumping routines for database 'OnlineMovieTicket'
+-- Dumping routines for database 'onlinemovieticket'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -280,4 +269,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-18 18:38:18
+-- Dump completed on 2018-01-18 23:44:53
