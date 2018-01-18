@@ -1,71 +1,75 @@
 package com.mtr.pojo;
 
 import java.sql.Date;
+import java.sql.Time;
 
 public class Ticket {
 
-	public int theatreMovieId;
-	public int userId;
-	public String seatNumber;
-	public Date date;
-	public int guest;
+	private int theatreMovieId;
+	private String email;
+	private String seatNumber;
+	private Date date;
+	private Time showTime;
 	
 	
 	public Ticket() {
 		super();
 	}
-	
-	
-	public Ticket(int theatreMovieId, int userId, String seatNumber, Date date, int guest) {
+
+	public Ticket(int theatreMovieId, String email, String seatNumber, Date date, Time showTime) {
 		super();
 		this.theatreMovieId = theatreMovieId;
-		this.userId = userId;
+		this.email = email;
 		this.seatNumber = seatNumber;
 		this.date = date;
-		this.guest = guest;
+		this.showTime = showTime;
 	}
-
 
 	@Override
 	public String toString() {
-		return "Ticket [theatreMovieId=" + theatreMovieId + ", userId=" + userId + ", seatNumber=" + seatNumber
-				+ ", date=" + date + ", guest=" + guest + "]";
+		return "Ticket [theatreMovieId=" + theatreMovieId + ", email=" + email + ", seatNumber=" + seatNumber
+				+ ", date=" + date + ", showTime=" + showTime + "]";
 	}
-	
-	
+
+	public int getTheatreMovieId() {
+		return theatreMovieId;
+	}
+
+	public void setTheatreMovieId(int theatreMovieId) {
+		this.theatreMovieId = theatreMovieId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getSeatNumber() {
 		return seatNumber;
 	}
-
 
 	public void setSeatNumber(String seatNumber) {
 		this.seatNumber = seatNumber;
 	}
 
-
-	public int getTheatreMovieId() {
-		return theatreMovieId;
-	}
-	public void setTheatreMovieId(int theatreMovieId) {
-		this.theatreMovieId = theatreMovieId;
-	}
-	public int getUserId() {
-		return userId;
-	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-	
 	public Date getDate() {
 		return date;
 	}
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public int getGuest() {
-		return guest;
+
+	public Time getShowTime() {
+		return showTime;
 	}
-	public void setGuest(int guest) {
-		this.guest = guest;
+
+	public void setShowTime(Time showTime) {
+		this.showTime = showTime;
 	}
+	
+	
 }

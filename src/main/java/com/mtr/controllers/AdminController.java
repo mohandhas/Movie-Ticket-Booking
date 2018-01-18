@@ -9,12 +9,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mtr.customizedexceptions.CustomizedNotFoundException;
 import com.mtr.dao.AdminDAO;
 import com.mtr.pojo.GetMoviesInTheatre;
 import com.mtr.pojo.Movie;
 import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.TheatreMovie;
+
+import javassist.NotFoundException;
 
 @RestController
 public class AdminController {
@@ -37,9 +40,12 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value= "addTheatre", method=RequestMethod.POST)
-	public void addTheatre(@RequestBody Theatre theatre)
+	public void addTheatre(@RequestBody Theatre theatre) 
 	{
-		adminDAO.addTheatre(theatre);
+		if(!adminDAO.addTheatre(theatre))
+		{
+			throw new CustomizedNotFoundException("Check your details");
+		}
 	}
 	
 	@RequestMapping(value= "addMovie", method=RequestMethod.POST)
@@ -72,7 +78,11 @@ public class AdminController {
 		 return adminDAO.listMoviesInTheatre(getMoviesInTheatre);
 	}
 	
-	
+	@RequestMapping(value= "editMovieInTheatre", method=RequestMethod.POST)
+	public void editMovieInTheatre(@RequestBody TheatreMovie theatreMovie)
+	{
+		 adminDAO.editMovieInTheatre(theatreMovie);
+	}
 }
 
 

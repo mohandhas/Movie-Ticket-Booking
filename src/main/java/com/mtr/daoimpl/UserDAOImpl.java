@@ -2,13 +2,14 @@ package com.mtr.daoimpl;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mtr.dao.UserDAO;
+import com.mtr.mapper.AvailableTicketsMapper;
 import com.mtr.mapper.MovieMapper;
-import com.mtr.mapper.StringMapper;
 import com.mtr.mapper.UserMapper;
 import com.mtr.pojo.BookTickets;
 import com.mtr.pojo.Movie;
@@ -24,18 +25,25 @@ public class UserDAOImpl implements UserDAO {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 
 	}
-	public boolean register(User user) {
+	
+	private User findUserId(String phone)
+	{
+		String sql = "SELECT * FROM USER WHERE PHONE=?";
+		return jdbcTemplate.queryForObject(sql, new Object[] {phone}, new UserMapper());
+	}
+	
+	public void register(User user) {
 		
-		if(user.getName()!=null && user.getName()!=null && user.getEmail()!=null && user.getPassword()!=null && user.getPhone()!=null)
+		String sql = "INSERT INTO USER (USER_NAME,EMAIL,PASSWORD,PHONE) VALUES (?,?,?,?)";
+		jdbcTemplate.update(sql,user.getName(),user.getEmail(),user.getPassword(),user.getPhone());
+		
+		User getId= findUserId(user.getPhone());
+				
+		for(int i=0;i<user.getFavoriteGenre().size();i++)
 		{
-			String sql = "INSERT INTO USER (USER_NAME,EMAIL,PASSWORD,PHONE,GENRE) VALUES(?,?,?,?,?)";
-			int count = jdbcTemplate.update(sql,user.getName(),user.getEmail(),user.getPassword(),user.getPhone(),user.getFavoriteGenere());
-			if(count!=0)
-			{
-				return false;
-			}
+			String sql2 = "INSERT INTO USER_GENRE(USER_ID, GENRE_ID) VALUES(?,?)";
+			jdbcTemplate.update(sql2,getId.getId(),user.getFavoriteGenre().get(i));
 		}
-		return true;
 	}
 
 	public User login(String email, String password) {
@@ -60,7 +68,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	public void addTicket(Ticket ticket) {
-		
+		String sql = "INSERT INTO TICKET_BOOKING(THEATRE_MOVIE_ID,EMAIL, SEAT_NO, DATE,SHOW_TIME) VALUES(?,?,?,?,?)";
+		jdbcTemplate.update(sql,ticket.getTheatreMovieId(),ticket.getEmail(),ticket.getSeatNumber(),ticket.getDate(),ticket.getShowTime());
 	}
 	
 	private Movie getMovie(int id)
@@ -78,8 +87,8 @@ public class UserDAOImpl implements UserDAO {
 		jdbcTemplate.update(sql,ratingHead+1,ratings,rating.getMovieId());
 		
 	}
-	public List<String> getBookedTickets(BookTickets availableTickets) {
+	public List<String> getBookedTickets(BookTickets bookedTickets) {
 		String sql = "SELECT SEAT_NO FROM TICKET_BOOKING WHERE THEATRE_MOVIE_ID=? AND SHOW_TIME=? AND DATE=?";
-		 return jdbcTemplate.query(sql, new Object[] {availableTickets.getTheatreMovieId(),availableTickets.getShowTime(), availableTickets.getShowDate()}, new StringMapper());
+		 return jdbcTemplate.query(sql, new Object[] {bookedTickets.getTheatreMovieId(),bookedTickets.getShowTime(), bookedTickets.getShowDate()}, new AvailableTicketsMapper());
 		}
 }

@@ -11,10 +11,11 @@ public class TicketMapper implements org.springframework.jdbc.core.RowMapper<Tic
 
 		Ticket ticket= new Ticket();
 		ticket.setTheatreMovieId(rs.getInt("THEATRE_MOVIE_ID"));
-		ticket.setUserId(rs.getInt("USER_ID"));
-		ticket.setSeatNumber(rs.getString("SEAT_NUMBER"));
+		ticket.setEmail(rs.getString("EMAIL"));
+		ticket.setSeatNumber(rs.getString("SEAT_NO"));
 		ticket.setDate(rs.getDate("DATE"));
-		ticket.setGuest(rs.getInt("GUEST"));
+		ticket.setShowTime(rs.getTime("SHOW_TIME"));
 		return ticket;
 	}
 }
+

@@ -15,9 +15,9 @@ public class TheatreMovieMapper implements org.springframework.jdbc.core.RowMapp
 		tm.setMovieId(rs.getInt("MOVIE_ID"));
 		tm.setScreen(rs.getInt("SCREEN"));
 		tm.setStartDate(rs.getDate("DATE_FROM"));
-		tm.setEndDate(rs.getDate("DATE_FROM"));
-		tm.setStartTime(rs.getTime("DATE_FROM"));
-		tm.setEndTime(rs.getTime("DATE_FROM"));
+		tm.setEndDate(rs.getDate("DATE_TO"));
+		tm.setStartTime(rs.getTime("TIME_FROM"));
+		tm.setEndTime(rs.getTime("TIME_TO"));
 		return tm;
 	}
 

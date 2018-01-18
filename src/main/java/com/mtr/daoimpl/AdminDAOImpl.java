@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mtr.dao.AdminDAO;
@@ -24,20 +25,29 @@ import com.mtr.pojo.TheatreMovie;
 public class AdminDAOImpl implements AdminDAO{
 	
 	private JdbcTemplate jdbcTemplate;
-
+	private static final Logger logger = Logger.getLogger(AdminDAOImpl.class);
+	
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 
 	}
 
 	private Admin findAdmin(String id) {
-		String sql = "SELECT * FROM ADMIN WHERE ADMIN_ID=?";
-		Admin checker = jdbcTemplate.queryForObject(sql, new Object[] {id}, new AdminMapper());
+		Admin checker;
+		try {	
+			String sql = "SELECT * FROM ADMIN WHERE ADMIN_ID=?";
+			checker = jdbcTemplate.queryForObject(sql, new Object[] {id}, new AdminMapper());
+		}
+		catch (Exception e) {
+			logger.error("User Name does not exsist!");
+			checker=null;
+		}
 		
 		if(checker == null)
 		{
 			return null;
 		}
+		logger.info("Admin's User Name found in DB");
 		return checker;
 	}
 	
@@ -50,15 +60,32 @@ public class AdminDAOImpl implements AdminDAO{
 		}
 		else if(id.equals(admin.getId()) && password.equals(admin.getPassword()))
 		{
+			logger.info("Admin Logged In");
 			return true;
 		}
+		logger.error("User Name Password Doesn't match");
 		return false;
 	}
 
-	public void addTheatre(Theatre theatre) {
-
-		String sql = "INSERT INTO THEATRE(THEATRE_NAME, LATITUDE, LONGITUDE,NO_OF_SCREENS) VALUES(?,?,?,?)";
-		jdbcTemplate.update(sql,theatre.getName(),theatre.getLatitude(),theatre.getLongitude(),theatre.getNumberOfScreen());
+	public boolean addTheatre(Theatre theatre) {
+		int checker;
+		try {
+			String sql = "INSERT INTO THEATRE(THEATRE_NAME, LATITUDE, LONGITUDE,NO_OF_SCREENS) VALUES(?,?,?,?)";
+			checker = jdbcTemplate.update(sql,theatre.getName(),theatre.getLatitude(),theatre.getLongitude(),theatre.getNumberOfScreen());
+		}
+		catch (Exception e) {
+			logger.error("Values not inserted."
+					+ "Reasons may be:"
+					+ "1.Trying to insert NULL values"
+					+ "2.Trying to add a Theatre which is already in DB");
+			checker=0;
+		}
+		if(checker == 0)
+		{
+			return false;
+		}
+		logger.info("Theatre Added successfully!");
+		return true;
 	}
 
 	private Movie findMovieId(String name, int duration)
@@ -69,20 +96,22 @@ public class AdminDAOImpl implements AdminDAO{
 	}
 	
 	public void addMovie(Movie movie) {
-	
-		System.out.println(movie);
-
-		String sql = "INSERT INTO MOVIE(MOVIE_NAME, MOVIE_DURATION) VALUES(?,?)";
-		jdbcTemplate.update(sql,movie.getName(),movie.getDuration());
 		
-		Movie getId= findMovieId(movie.getName(), movie.getDuration());
-		System.out.println(getId);
-
+		int checker;
+		try {
+			String sql = "INSERT INTO MOVIE(MOVIE_NAME, MOVIE_DURATION) VALUES(?,?)";
+			jdbcTemplate.update(sql,movie.getName(),movie.getDuration());
+			Movie getId= findMovieId(movie.getName(), movie.getDuration());
 		
-		for(int i=0;i<movie.getGenre().size();i++)
+			for(int i=0;i<movie.getGenre().size();i++)
+			{
+				String sql2 = "INSERT INTO GENRE_MOVIE(MOVIE_ID, GENRE_ID) VALUES(?,?)";
+				jdbcTemplate.update(sql2,getId.getId(),movie.getGenre().get(i));
+			}
+		}
+		catch(Exception e)
 		{
-			String sql2 = "INSERT INTO GENRE_MOVIE(MOVIE_ID, GENRE_ID) VALUES(?,?)";
-			jdbcTemplate.update(sql2,getId.getId(),movie.getGenre().get(i));
+			
 		}
 	}
 
@@ -127,7 +156,15 @@ public class AdminDAOImpl implements AdminDAO{
 
 	@Override
 	public void editMovieInTheatre(TheatreMovie theatreMovie) {
-		String sql = "INSERT INTO THEATRE(THEATRE_NAME, LATITUDE, LONGITUDE,NO_OF_SCREENS) VALUES(?,?,?,?)";
-	}
+		Time endTime=theatreMovie.getStartTime();
+		Movie temp= getDuration(theatreMovie.getMovieId());
+		long duration = temp.getDuration();
+		LocalTime localtime = endTime.toLocalTime();
+		localtime = localtime.plusMinutes(duration);
+		Time finalTime = java.sql.Time.valueOf(localtime);
+
+		String sql = "UPDATE THEATRE_MOVIE SET THEATRE_ID=?, MOVIE_ID=?, SCREEN=?,DATE_FROM=?, DATE_TO=?,TIME_FROM=?,TIME_TO=? WHERE THEATRE_MOVIE_ID=?";
+		jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime,theatreMovie.getTheatreMovieId());	
+		}
 
 }

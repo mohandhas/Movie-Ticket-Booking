@@ -12,7 +12,7 @@ public class UserMapper implements org.springframework.jdbc.core.RowMapper<User>
 		
 		User user= new User();
 		
-		user.setEmail(rs.getString("USER_ID"));
+		user.setId(rs.getString("USER_ID"));
 		user.setName(rs.getString("USER_NAME"));
 		user.setEmail(rs.getString("EMAIL"));
 		user.setPassword(rs.getString("PASSWORD"));

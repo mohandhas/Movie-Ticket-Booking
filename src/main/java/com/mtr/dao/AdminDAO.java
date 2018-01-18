@@ -16,7 +16,7 @@ public interface AdminDAO {
 	
 	public boolean login(String id, String password);
 	
-	public void addTheatre(Theatre theatre);
+	public boolean addTheatre(Theatre theatre);
 	
 	public void addMovie(Movie movie);
 	
