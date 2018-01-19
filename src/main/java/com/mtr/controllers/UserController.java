@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.mtr.daoimpl.UserDAOImpl;
-import com.mtr.pojo.BookTickets;
+import com.mtr.pojo.BookedTicketsForParticularShow;
 import com.mtr.pojo.Ratings;
 import com.mtr.pojo.Ticket;
 import com.mtr.pojo.User;
@@ -60,7 +60,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value= "bookedTickets", method=RequestMethod.POST)
-	public List<String> getBookedTickets(@RequestBody BookTickets bookedTickets)
+	public List<String> getBookedTickets(@RequestBody BookedTicketsForParticularShow bookedTickets)
 	{
 		return userDAOImpl.getBookedTickets(bookedTickets);
 	}

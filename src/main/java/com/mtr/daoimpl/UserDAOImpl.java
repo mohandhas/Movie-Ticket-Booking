@@ -10,7 +10,7 @@ import com.mtr.dao.UserDAO;
 import com.mtr.mapper.AvailableTicketsMapper;
 import com.mtr.mapper.MovieMapper;
 import com.mtr.mapper.UserMapper;
-import com.mtr.pojo.BookTickets;
+import com.mtr.pojo.BookedTicketsForParticularShow;
 import com.mtr.pojo.Movie;
 import com.mtr.pojo.Ratings;
 import com.mtr.pojo.Ticket;
@@ -62,9 +62,6 @@ public class UserDAOImpl implements UserDAO {
 		String sql = "SELECT * FROM USER WHERE EMAIL=?";
 		return jdbcTemplate.queryForObject(sql, new Object[] {email}, new UserMapper());
 	}
-	public List<Movie> getMoviesInTheatre(int id) {
-		return null;
-	}
 	
 	public void addTicket(Ticket ticket) {
 		String sql = "INSERT INTO TICKET_BOOKING(THEATRE_MOVIE_ID,EMAIL, SEAT_NO, DATE,SHOW_TIME) VALUES(?,?,?,?,?)";
@@ -86,7 +83,8 @@ public class UserDAOImpl implements UserDAO {
 		jdbcTemplate.update(sql,ratingHead+1,ratings,rating.getMovieId());
 		
 	}
-	public List<String> getBookedTickets(BookTickets bookedTickets) {
+	
+	public List<String> getBookedTickets(BookedTicketsForParticularShow bookedTickets) {
 		String sql = "SELECT SEAT_NO FROM TICKET_BOOKING WHERE THEATRE_MOVIE_ID=? AND SHOW_TIME=? AND DATE=?";
 		 return jdbcTemplate.query(sql, new Object[] {bookedTickets.getTheatreMovieId(),bookedTickets.getShowTime(), bookedTickets.getShowDate()}, new AvailableTicketsMapper());
 		}

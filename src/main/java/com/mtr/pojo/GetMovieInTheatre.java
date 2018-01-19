@@ -2,19 +2,19 @@ package com.mtr.pojo;
 
 import java.sql.Date;
 
-public class GetMoviesInTheatre {
+public class GetMovieInTheatre {
 	private int theatreId;
 	private Date showDate;
 	@Override
 	public String toString() {
 		return "GetMoviesInTheatre [theatreId=" + theatreId + ", showDate=" + showDate + "]";
 	}
-	public GetMoviesInTheatre(int theatreId, Date showDate) {
+	public GetMovieInTheatre(int theatreId, Date showDate) {
 		super();
 		this.theatreId = theatreId;
 		this.showDate = showDate;
 	}
-	public GetMoviesInTheatre() {
+	public GetMovieInTheatre() {
 		super();
 	}
 	public int getTheatreId() {

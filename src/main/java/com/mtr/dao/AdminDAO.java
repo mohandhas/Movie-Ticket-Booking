@@ -4,11 +4,11 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.mtr.pojo.GetMoviesInTheatre;
+import com.mtr.pojo.GetMovieInTheatre;
 import com.mtr.pojo.Movie;
 import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
-import com.mtr.pojo.TheatreMovie;
+import com.mtr.pojo.MovieInTheatre;
 
 public interface AdminDAO {
 	
@@ -24,10 +24,10 @@ public interface AdminDAO {
 	
 	public List<Movie> getAllMovies();
 	
-	public boolean addMovieInTheatre(TheatreMovie theatreMovie);
+	public boolean addMovieInTheatre(MovieInTheatre theatreMovie);
 	
-	public List<MoviesListInTheatre> listMoviesInTheatre(GetMoviesInTheatre getMoviesInTheatre);
+	public List<MoviesListInTheatre> listMoviesInTheatre(GetMovieInTheatre getMoviesInTheatre);
 
-	public boolean editMovieInTheatre(TheatreMovie theatreMovie);
+	public boolean editMovieInTheatre(MovieInTheatre theatreMovie);
 
 }

@@ -3,14 +3,14 @@ package com.mtr.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.mtr.pojo.TheatreMovie;
+import com.mtr.pojo.MovieInTheatre;
 
-public class TheatreMovieMapper implements org.springframework.jdbc.core.RowMapper<TheatreMovie> {
+public class TheatreMovieMapper implements org.springframework.jdbc.core.RowMapper<MovieInTheatre> {
 
-	public TheatreMovie mapRow(ResultSet rs, int rowNum) throws SQLException {
+	public MovieInTheatre mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		TheatreMovie tm= new TheatreMovie();
-		tm.setTheatreMovieId(rs.getInt("THEATRE_MOVIE_ID"));
+		MovieInTheatre tm= new MovieInTheatre();
+		tm.setTheatreMovieId(rs.getString("THEATRE_MOVIE_ID"));
 		tm.setTheatreId(rs.getInt("THEATRE_ID"));
 		tm.setMovieId(rs.getInt("MOVIE_ID"));
 		tm.setScreen(rs.getInt("SCREEN"));

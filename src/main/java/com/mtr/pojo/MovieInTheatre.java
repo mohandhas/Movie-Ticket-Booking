@@ -3,9 +3,9 @@
 import java.sql.Time;
 import java.sql.Date;
 
-public class TheatreMovie {
+public class MovieInTheatre {
 
-	private int theatreMovieId;
+	private String  theatreMovieId;
 	private int theatreId;
 	private int movieId;
 	private int screen;
@@ -15,10 +15,10 @@ public class TheatreMovie {
 	private Time endTime;
 	
 	
-	public TheatreMovie() {
+	public MovieInTheatre() {
 		super();
 	}
-	public TheatreMovie(int theatreMovieId, int theatreId, int movieId, int screen, Date startDate, Date endDate,
+	public MovieInTheatre(String theatreMovieId, int theatreId, int movieId, int screen, Date startDate, Date endDate,
 			Time startTime, Time endTime) {
 		super();
 		this.theatreMovieId = theatreMovieId;
@@ -36,10 +36,10 @@ public class TheatreMovie {
 				+ ", screen=" + screen + ", startDate=" + startDate + ", endDate=" + endDate + ", startTime="
 				+ startTime + ", endTime=" + endTime + "]";
 	}
-	public int getTheatreMovieId() {
+	public String getTheatreMovieId() {
 		return theatreMovieId;
 	}
-	public void setTheatreMovieId(int theatreMovieId) {
+	public void setTheatreMovieId(String theatreMovieId) {
 		this.theatreMovieId = theatreMovieId;
 	}
 	public int getTheatreId() {

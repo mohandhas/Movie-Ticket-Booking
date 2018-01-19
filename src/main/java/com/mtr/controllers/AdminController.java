@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mtr.customizedexceptions.CustomizedBadRequestException;
 import com.mtr.customizedexceptions.CustomizedNotFoundException;
 import com.mtr.dao.AdminDAO;
-import com.mtr.pojo.GetMoviesInTheatre;
+import com.mtr.pojo.GetMovieInTheatre;
 import com.mtr.pojo.Movie;
 import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
-import com.mtr.pojo.TheatreMovie;
+import com.mtr.pojo.MovieInTheatre;
 
-import javassist.NotFoundException;
 
 @RestController
 public class AdminController {
@@ -77,16 +76,16 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value= "addMovieInTheatre", method=RequestMethod.POST)
-	public void addMovieInTheatre(@RequestBody TheatreMovie theatreMovie)
+	public void addMovieInTheatre(@RequestBody MovieInTheatre theatreMovie)
 	{
-		 	if(adminDAO.addMovieInTheatre(theatreMovie))
+			if(!adminDAO.addMovieInTheatre(theatreMovie))
 		 	{
 				throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
 		 	}
 	}
 	
 	@RequestMapping(value= "getMovieInTheatre", method=RequestMethod.POST)
-	public List<MoviesListInTheatre> listMoviesInTheatre(@RequestBody GetMoviesInTheatre getMoviesInTheatre)
+	public List<MoviesListInTheatre> listMoviesInTheatre(@RequestBody GetMovieInTheatre getMoviesInTheatre)
 	{
 		List<MoviesListInTheatre> list=adminDAO.listMoviesInTheatre(getMoviesInTheatre);
 			if(list==null)
@@ -97,7 +96,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value= "editMovieInTheatre", method=RequestMethod.POST)
-	public void editMovieInTheatre(@RequestBody TheatreMovie theatreMovie)
+	public void editMovieInTheatre(@RequestBody MovieInTheatre theatreMovie)
 	{
 		 adminDAO.editMovieInTheatre(theatreMovie);
 	}

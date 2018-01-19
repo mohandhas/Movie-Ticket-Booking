@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.mtr.pojo.BookTickets;
+import com.mtr.pojo.BookedTicketsForParticularShow;
 import com.mtr.pojo.Ratings;
 import com.mtr.pojo.Ticket;
 import com.mtr.pojo.User;
@@ -21,6 +21,6 @@ public interface UserDAO {
 	
 	public void updateRatings(Ratings rating);
 	
-	public List<String> getBookedTickets(BookTickets bookedTickets);
+	public List<String> getBookedTickets(BookedTicketsForParticularShow bookedTickets);
 	
 }

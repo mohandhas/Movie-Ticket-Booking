@@ -3,6 +3,8 @@ package com.mtr.daoimpl;
 
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -12,15 +14,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mtr.dao.AdminDAO;
 import com.mtr.mapper.AdminMapper;
+import com.mtr.mapper.MoviesListInTheatreSQLMapper;
 import com.mtr.mapper.MovieMapper;
-import com.mtr.mapper.MoviesListInTheatreMapper;
 import com.mtr.mapper.TheatreMapper;
 import com.mtr.pojo.Admin;
-import com.mtr.pojo.GetMoviesInTheatre;
+import com.mtr.pojo.GetMovieInTheatre;
 import com.mtr.pojo.Movie;
+import com.mtr.pojo.MoviesListInTheatreSQL;
 import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
-import com.mtr.pojo.TheatreMovie;
+import com.mtr.pojo.MovieInTheatre;
 
 
 public class AdminDAOImpl implements AdminDAO{
@@ -106,13 +109,15 @@ public class AdminDAOImpl implements AdminDAO{
 	}
 	
 	public boolean addMovie(Movie movie) {
-		
 		int checker;
-		try {
-			String sql = "INSERT INTO MOVIE(MOVIE_NAME, MOVIE_DURATION) VALUES(?,?)";
-			checker = jdbcTemplate.update(sql,movie.getName(),movie.getDuration());
-			Movie getId= findMovieId(movie.getName(), movie.getDuration());
 		
+		try {
+			System.out.println(movie);
+			String sql = "INSERT INTO MOVIE(MOVIE_NAME, MOVIE_DURATION) VALUES(?,?)";
+			checker=jdbcTemplate.update(sql,movie.getName(),movie.getDuration());
+			Movie getId= findMovieId(movie.getName(), movie.getDuration());
+			System.out.println(getId);
+
 			if(getId==null)
 			{
 				logger.error("Movie Not addedSuccessfully!");
@@ -200,53 +205,85 @@ public class AdminDAOImpl implements AdminDAO{
 		return checker;
 	}
 	
-	public boolean addMovieInTheatre(TheatreMovie theatreMovie) {
+	public boolean addMovieInTheatre(MovieInTheatre theatreMovie) {
 		int checker;
 		try{
-			Time endTime=theatreMovie.getStartTime();
-			Movie temp= getDuration(theatreMovie.getMovieId());
-			if(temp==null)
+				Time endTime=theatreMovie.getStartTime();
+				Movie temp= getDuration(theatreMovie.getMovieId());
+				
+				if(temp==null)
+				{
+					logger.error("movie not added sucessfully!");
+					return false;
+				}
+				
+				long duration = temp.getDuration();
+				LocalTime localtime = endTime.toLocalTime();
+				localtime = localtime.plusMinutes(duration);
+				Time finalTime = java.sql.Time.valueOf(localtime);
+				
+				String theatreMovieId = "T"+theatreMovie.getTheatreId()+"M"+theatreMovie.getMovieId(); 
+				
+				String sql = "INSERT INTO THEATRE_MOVIE(THEATRE_MOVIE_ID,THEATRE_ID, MOVIE_ID, SCREEN,DATE_FROM, DATE_TO,TIME_FROM,TIME_TO) VALUES(?,?,?,?,?,?,?,?)";
+				checker = jdbcTemplate.update(sql,theatreMovieId,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime);
+			
+			}
+			catch(Exception e)
+			{
+				checker = 0;
+			}
+			
+			if(checker == 0)
 			{
 				logger.error("movie not added sucessfully!");
 				return false;
 			}
-			long duration = temp.getDuration();
-			LocalTime localtime = endTime.toLocalTime();
-			localtime = localtime.plusMinutes(duration);
-			Time finalTime = java.sql.Time.valueOf(localtime);
-			
-			String sql = "INSERT INTO THEATRE_MOVIE(THEATRE_ID, MOVIE_ID, SCREEN,DATE_FROM, DATE_TO,TIME_FROM,TIME_TO) VALUES(?,?,?,?,?,?,?)";
-			checker = jdbcTemplate.update(sql,theatreMovie.getTheatreId(),theatreMovie.getMovieId(),theatreMovie.getScreen(),theatreMovie.getStartDate(),theatreMovie.getEndDate(),theatreMovie.getStartTime(),finalTime);
-		}
-		catch(Exception e)
-		{
-			checker = 0;
-		}
-		
-		if(checker == 0)
-		{
-			logger.error("movie not added sucessfully!");
-			return false;
-		}
-		logger.info("Movie Added Sucessfully!");
-		return true;
+			logger.info("Movie Added Sucessfully!");
+			return true;
 	}
 
 	@Override
-	public List<MoviesListInTheatre> listMoviesInTheatre(GetMoviesInTheatre getMoviesInTheatre) {
-		List<MoviesListInTheatre> checker;
-		try {
-			//List<Time> time = new ArrayList<Time>();
-			
-			String sql = "SELECT * FROM MOVIE JOIN THEATRE_MOVIE ON MOVIE.MOVIE_ID = THEATRE_MOVIE.MOVIE_ID "
+	public List<MoviesListInTheatre> listMoviesInTheatre(GetMovieInTheatre getMoviesInTheatre) {
+		
+		List<MoviesListInTheatreSQL> checker;
+		
+		List<MoviesListInTheatre> moviesListInTheatre = new ArrayList<>();
+
+		try {	
+			String sql = "SELECT * FROM MOVIE "
+					+ "JOIN THEATRE_MOVIE ON MOVIE.MOVIE_ID = THEATRE_MOVIE.MOVIE_ID "
+					+ "JOIN GENRE_MOVIE ON MOVIE.MOVIE_ID=GENRE_MOVIE.MOVIE_ID "
 					+ "WHERE THEATRE_MOVIE.THEATRE_ID =? and date_from<=? and date_to>=? "
-					+ "ORDER BY MOVIE_NAME ASC";
-			checker = jdbcTemplate.query(sql, new Object[] {getMoviesInTheatre.getTheatreId(),getMoviesInTheatre.getShowDate(),getMoviesInTheatre.getShowDate()}, new MoviesListInTheatreMapper());
-//			for(int i=0;i<checker.size();i++)
-//			{
-//				time.add(checker.get(i).getShowTime());
-//	
-//			}
+					+ "ORDER BY THEATRE_MOVIE_ID ASC";
+			checker = jdbcTemplate.query(sql, new Object[] {getMoviesInTheatre.getTheatreId(),getMoviesInTheatre.getShowDate(),getMoviesInTheatre.getShowDate()}, new MoviesListInTheatreSQLMapper());
+			
+			
+			MoviesListInTheatre temp = new  MoviesListInTheatre();
+			
+			for(int i=0;i<checker.size();i++)
+			{
+				if(moviesListInTheatre.isEmpty() || !(moviesListInTheatre.get(moviesListInTheatre.size()-1).getTheatreMovieId()).equals(checker.get(i).getTheatreMovieId()))
+				{
+					temp.setTheatreMovieId(checker.get(i).getTheatreMovieId()); 
+					temp.setMovieId(checker.get(i).getMovieId());
+					temp.setMovieName(checker.get(i).getMovieName());
+					temp.setDuration(checker.get(i).getDuration());
+					temp.setScreen(checker.get(i).getScreen());
+					temp.setRating(checker.get(i).getRating());
+					temp.setRatingCount(checker.get(i).getRatingCount());
+					temp.setGenre(new LinkedHashSet<Integer>());
+					temp.setShowTime(new LinkedHashSet<Time>());
+					temp.getGenre().add(checker.get(i).getGenre());
+					temp.getShowTime().add(checker.get(i).getShowTime());
+					moviesListInTheatre.add(temp);
+				}
+				else
+				{
+					moviesListInTheatre.get(moviesListInTheatre.size()-1).getGenre().add(checker.get(i).getGenre());
+					moviesListInTheatre.get(moviesListInTheatre.size()-1).getShowTime().add(checker.get(i).getShowTime());
+				}
+			}	
+		
 		}
 		catch(Exception e)
 		{
@@ -259,11 +296,11 @@ public class AdminDAOImpl implements AdminDAO{
 			return null;
 		}
 		logger.info("The Selected Theatre contains the below movies");
-		return checker;
+		return moviesListInTheatre;
 	}
 
 	@Override
-	public boolean editMovieInTheatre(TheatreMovie theatreMovie) {
+	public boolean editMovieInTheatre(MovieInTheatre theatreMovie) {
 		int checker=0;
 		try
 		{

@@ -3,20 +3,20 @@ package com.mtr.pojo;
 import java.sql.Date;
 import java.sql.Time;
 
-public class BookTickets {
+public class BookedTicketsForParticularShow {
 
 	private int theatreMovieId;
 	private Date showDate;
 	private Time showTime;
 	
-	public BookTickets(int theatreMovieId, Date showDate, Time showTime) {
+	public BookedTicketsForParticularShow(int theatreMovieId, Date showDate, Time showTime) {
 		super();
 		this.theatreMovieId = theatreMovieId;
 		this.showDate = showDate;
 		this.showTime = showTime;
 	}
 	
-	public BookTickets() {
+	public BookedTicketsForParticularShow() {
 		super();
 	}
 	
