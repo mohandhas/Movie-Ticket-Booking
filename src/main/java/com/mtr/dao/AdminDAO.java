@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.mtr.pojo.BookedTicketsForParticularShow;
 import com.mtr.pojo.GetMovieInTheatre;
 import com.mtr.pojo.Movie;
 import com.mtr.pojo.MoviesListInTheatre;
@@ -29,5 +30,7 @@ public interface AdminDAO {
 	public List<MoviesListInTheatre> listMoviesInTheatre(GetMovieInTheatre getMoviesInTheatre);
 
 	public boolean editMovieInTheatre(MovieInTheatre theatreMovie);
+
+	public int getTicketCountInAParticularShow(BookedTicketsForParticularShow bookedTicketsForParticularShow);
 
 }

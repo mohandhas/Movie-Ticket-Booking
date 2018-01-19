@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mtr.customizedexceptions.CustomizedBadRequestException;
 import com.mtr.customizedexceptions.CustomizedNotFoundException;
 import com.mtr.dao.AdminDAO;
+import com.mtr.pojo.BookedTicketsForParticularShow;
 import com.mtr.pojo.GetMovieInTheatre;
 import com.mtr.pojo.Movie;
 import com.mtr.pojo.MoviesListInTheatre;
@@ -86,6 +87,7 @@ public class AdminController {
 	@RequestMapping(value= "getMovieInTheatre", method=RequestMethod.POST)
 	public List<MoviesListInTheatre> listMoviesInTheatre(@RequestBody GetMovieInTheatre getMoviesInTheatre)
 	{
+		System.out.println(getMoviesInTheatre);
 		List<MoviesListInTheatre> list=adminDAO.listMoviesInTheatre(getMoviesInTheatre);
 			if(list==null)
 			{
@@ -100,6 +102,12 @@ public class AdminController {
 		 adminDAO.editMovieInTheatre(theatreMovie);
 	}
 	
+
+	@RequestMapping(value= "getTicketCount", method=RequestMethod.POST)
+	public void getTicketCount(@RequestBody BookedTicketsForParticularShow bookedTicketsForParticularShow)
+	{
+		 adminDAO.getTicketCountInAParticularShow(bookedTicketsForParticularShow);
+	}
 }
 
 

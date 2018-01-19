@@ -18,13 +18,13 @@ import com.mtr.mapper.MoviesListInTheatreSQLMapper;
 import com.mtr.mapper.MovieMapper;
 import com.mtr.mapper.TheatreMapper;
 import com.mtr.pojo.Admin;
+import com.mtr.pojo.BookedTicketsForParticularShow;
 import com.mtr.pojo.GetMovieInTheatre;
 import com.mtr.pojo.Movie;
 import com.mtr.pojo.MoviesListInTheatreSQL;
 import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.MovieInTheatre;
-
 
 public class AdminDAOImpl implements AdminDAO{
 	
@@ -246,7 +246,7 @@ public class AdminDAOImpl implements AdminDAO{
 	public List<MoviesListInTheatre> listMoviesInTheatre(GetMovieInTheatre getMoviesInTheatre) {
 		
 		List<MoviesListInTheatreSQL> checker;
-		
+
 		List<MoviesListInTheatre> moviesListInTheatre = new ArrayList<>();
 
 		try {	
@@ -258,12 +258,13 @@ public class AdminDAOImpl implements AdminDAO{
 			checker = jdbcTemplate.query(sql, new Object[] {getMoviesInTheatre.getTheatreId(),getMoviesInTheatre.getShowDate(),getMoviesInTheatre.getShowDate()}, new MoviesListInTheatreSQLMapper());
 			
 			
-			MoviesListInTheatre temp = new  MoviesListInTheatre();
-			
 			for(int i=0;i<checker.size();i++)
 			{
-				if(moviesListInTheatre.isEmpty() || !(moviesListInTheatre.get(moviesListInTheatre.size()-1).getTheatreMovieId()).equals(checker.get(i).getTheatreMovieId()))
+				MoviesListInTheatre temp = new  MoviesListInTheatre();
+
+				if(moviesListInTheatre.isEmpty() || !((moviesListInTheatre.get(moviesListInTheatre.size()-1).getTheatreMovieId()).equals(checker.get(i).getTheatreMovieId())))
 				{
+					
 					temp.setTheatreMovieId(checker.get(i).getTheatreMovieId()); 
 					temp.setMovieId(checker.get(i).getMovieId());
 					temp.setMovieName(checker.get(i).getMovieName());
@@ -287,6 +288,7 @@ public class AdminDAOImpl implements AdminDAO{
 		}
 		catch(Exception e)
 		{
+			System.out.println("In catch");
 			checker = null;
 		}
 		
@@ -325,6 +327,13 @@ public class AdminDAOImpl implements AdminDAO{
 		}
 		logger.info("Edited movie in particular theatre");
 		return true;
+	}
+
+	@Override
+	public int getTicketCountInAParticularShow(BookedTicketsForParticularShow bookedTicketsForParticularShow) {
+		
+		String sql="SELECT COUNT(*) FROM TICKET_BOOKING WHERE THEATRE_MOVIE_ID=? AND DATE=? AND SHOW_TIME=?";
+		return jdbcTemplate.queryForObject(sql, new Object[] {bookedTicketsForParticularShow.getTheatreMovieId(), bookedTicketsForParticularShow.getShowDate(),bookedTicketsForParticularShow.getShowTime()},Integer.class );
 	}
 
 }

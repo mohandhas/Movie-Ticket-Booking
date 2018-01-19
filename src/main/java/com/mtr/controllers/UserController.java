@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.mtr.daoimpl.AdminDAOImpl;
 import com.mtr.daoimpl.UserDAOImpl;
 import com.mtr.pojo.BookedTicketsForParticularShow;
 import com.mtr.pojo.Ratings;
@@ -24,7 +25,10 @@ public class UserController {
 	
 	@Autowired
 	UserDAOImpl userDAOImpl;
-
+	
+	@Autowired
+	AdminDAOImpl adminDAOImpl;
+	
 	@RequestMapping(value= "addUser", method=RequestMethod.POST)
 	public void addUser(@RequestBody User user)
 	{		
@@ -45,6 +49,7 @@ public class UserController {
 				session.setAttribute("activeUser", email);
 			}
 	}
+	
 	
 	@RequestMapping(value= "addTicket", method=RequestMethod.POST)
 	public void addTicket(@RequestBody Ticket ticket)
