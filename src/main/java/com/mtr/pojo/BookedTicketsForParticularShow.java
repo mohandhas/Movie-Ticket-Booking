@@ -5,35 +5,26 @@ import java.sql.Time;
 
 public class BookedTicketsForParticularShow {
 
-	private int theatreMovieId;
+	private String theatreMovieId;
 	private Date showDate;
 	private Time showTime;
-	
-	public BookedTicketsForParticularShow(int theatreMovieId, Date showDate, Time showTime) {
+	public BookedTicketsForParticularShow(String theatreMovieId, Date showDate, Time showTime) {
 		super();
 		this.theatreMovieId = theatreMovieId;
 		this.showDate = showDate;
 		this.showTime = showTime;
 	}
-	
-	public BookedTicketsForParticularShow() {
-		super();
-	}
-	
 	@Override
 	public String toString() {
-		return "AvailableTickets [theatreMovieId=" + theatreMovieId + ", showDate=" + showDate + ", showTime="
-				+ showTime + "]";
+		return "BookedTicketsForParticularShow [theatreMovieId=" + theatreMovieId + ", showDate=" + showDate
+				+ ", showTime=" + showTime + "]";
 	}
-	
-	public int getTheatreMovieId() {
+	public String getTheatreMovieId() {
 		return theatreMovieId;
 	}
-	
-	public void setTheatreMovieId(int theatreMovieId) {
+	public void setTheatreMovieId(String theatreMovieId) {
 		this.theatreMovieId = theatreMovieId;
 	}
-	
 	public Date getShowDate() {
 		return showDate;
 	}
@@ -46,4 +37,9 @@ public class BookedTicketsForParticularShow {
 	public void setShowTime(Time showTime) {
 		this.showTime = showTime;
 	}
+	public BookedTicketsForParticularShow() {
+		super();
+	}
+	
+	
 }
