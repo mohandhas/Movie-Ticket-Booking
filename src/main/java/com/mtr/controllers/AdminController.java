@@ -100,6 +100,7 @@ public class AdminController {
 	{
 		 adminDAO.editMovieInTheatre(theatreMovie);
 	}
+	
 }
 
 
