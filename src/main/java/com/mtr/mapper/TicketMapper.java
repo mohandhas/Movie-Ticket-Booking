@@ -10,7 +10,7 @@ public class TicketMapper implements org.springframework.jdbc.core.RowMapper<Tic
 	public Ticket mapRow(ResultSet rs, int rowNum) throws SQLException {
 
 		Ticket ticket= new Ticket();
-		ticket.setTheatreMovieId(rs.getInt("THEATRE_MOVIE_ID"));
+		ticket.setTheatreMovieId(rs.getString("THEATRE_MOVIE_ID"));
 		ticket.setEmail(rs.getString("EMAIL"));
 		ticket.setSeatNumber(rs.getString("SEAT_NO"));
 		ticket.setDate(rs.getDate("DATE"));
