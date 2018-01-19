@@ -18,7 +18,6 @@ import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.MovieInTheatre;
 
-
 @RestController
 public class AdminController {
 	
