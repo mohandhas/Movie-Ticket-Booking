@@ -7,15 +7,12 @@ package com.mtr.controllers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.mtr.customizedexceptions.CustomizedBadRequestException;
 import com.mtr.customizedexceptions.CustomizedNotFoundException;
@@ -28,7 +25,6 @@ import com.mtr.pojo.MoviesListInTheatre;
 import com.mtr.pojo.Theatre;
 import com.mtr.pojo.MovieInTheatre;
 
-@SessionAttributes("activeAdmin")
 @RestController
 public class AdminController {
 
@@ -40,12 +36,10 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "adminLogin", method = RequestMethod.POST)
-	public void validateAdmin(@RequestParam("id") String id, @RequestParam("password") String password,
-			HttpSession session) {
+	public void validateAdmin(@RequestParam("id") String id, @RequestParam("password") String password) {
 		if (!adminDAO.login(id, password)) {
 			throw new CustomizedBadRequestException("USER NAME OR PASSWORD INVALID");
 		}
-		session.setAttribute("activeAdmin", id);
 	}
 
 	/*
@@ -53,12 +47,9 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "addTheatre", method = RequestMethod.POST)
-	public void addTheatre(@RequestBody Theatre theatre, HttpSession session) {
-		if (session.getAttribute("activeAdmin") != null) {
-			if (!adminDAO.addTheatre(theatre)) {
-				throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID");
-			}
-			throw new CustomizedBadRequestException("Login First!x");
+	public void addTheatre(@RequestBody Theatre theatre) {
+		if (!adminDAO.addTheatre(theatre)) {
+			throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID");
 		}
 	}
 
@@ -67,13 +58,9 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "addMovie", method = RequestMethod.POST)
-	public void addMovie(@RequestBody Movie movie, HttpSession session) {
-		if (session.getAttribute("activeAdmin") != null) {
-			if (!adminDAO.addMovie(movie)) {
-				throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID");
-			}
-
-			throw new CustomizedBadRequestException("Login First!x");
+	public void addMovie(@RequestBody Movie movie) {
+		if (!adminDAO.addMovie(movie)) {
+			throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID");
 		}
 	}
 
@@ -82,12 +69,9 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "addAddons", method = RequestMethod.POST)
-	public void addAddons(@RequestBody Addons addon, HttpSession session) {
-		if (session.getAttribute("activeAdmin") != null) {
-			if (!adminDAO.addAddon(addon)) {
-				throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
-			}
-			throw new CustomizedBadRequestException("Login First!x");
+	public void addAddons(@RequestBody Addons addon) {
+		if (!adminDAO.addAddon(addon)) {
+			throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
 		}
 	}
 
@@ -96,12 +80,9 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "addMovieInTheatre", method = RequestMethod.POST)
-	public void addMovieInTheatre(@RequestBody MovieInTheatre theatreMovie, HttpSession session) {
-		if (session.getAttribute("activeAdmin") != null) {
-			if (!adminDAO.addMovieInTheatre(theatreMovie)) {
-				throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
-			}
-			throw new CustomizedBadRequestException("Login First!x");
+	public void addMovieInTheatre(@RequestBody MovieInTheatre theatreMovie) {
+		if (!adminDAO.addMovieInTheatre(theatreMovie)) {
+			throw new CustomizedBadRequestException("DETAILS ENTERED IS INVALID!");
 		}
 	}
 
@@ -110,15 +91,12 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "listTheatres", method = RequestMethod.GET)
-	public List<Theatre> listTheatres(HttpSession session) {
+	public List<Theatre> listTheatres() {
 		List<Theatre> list = adminDAO.getAllTheatres();
-		if (session.getAttribute("activeAdmin") != null) {
 			if (list == null) {
 				throw new CustomizedNotFoundException("No theatres found");
 			}
 			return list;
-		}
-		throw new CustomizedBadRequestException("Login First!x");
 	}
 
 	/*
@@ -126,15 +104,12 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "listMovies", method = RequestMethod.GET)
-	public List<Movie> listMovies(HttpSession session) {
+	public List<Movie> listMovies() {
 		List<Movie> list = adminDAO.getAllMovies();
-		if (session.getAttribute("activeAdmin") != null) {
 			if (list == null) {
 				throw new CustomizedNotFoundException("No movies found");
 			}
 			return list;
-		}
-		throw new CustomizedBadRequestException("Login First!x");
 	}
 
 	/*
@@ -142,16 +117,12 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "listAddons", method = RequestMethod.GET)
-	public List<Addons> listAddons(HttpSession session) {
+	public List<Addons> listAddons() {
 		List<Addons> list = adminDAO.getAllAddons();
-		if (session.getAttribute("activeAdmin") != null) {
 			if (list == null) {
 				throw new CustomizedNotFoundException("No Addons found");
 			}
 			return list;
-		}
-		throw new CustomizedBadRequestException("Login First!x");
-
 	}
 
 	/*
@@ -159,17 +130,12 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "getMovieInTheatre", method = RequestMethod.POST)
-	public List<MoviesListInTheatre> listMoviesInTheatre(@RequestBody GetMovieInTheatre getMoviesInTheatre,
-			HttpSession session) {
+	public List<MoviesListInTheatre> listMoviesInTheatre(@RequestBody GetMovieInTheatre getMoviesInTheatre) {
 		List<MoviesListInTheatre> list = adminDAO.listMoviesInTheatre(getMoviesInTheatre);
-		if (session.getAttribute("activeAdmin") != null) {
 			if (list == null) {
 				throw new CustomizedNotFoundException("No movies found");
 			}
 			return list;
-		}
-		throw new CustomizedBadRequestException("Login First!x");
-
 	}
 
 	/*
@@ -177,25 +143,19 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "editMovieInTheatre", method = RequestMethod.POST)
-	public void editMovieInTheatre(@RequestBody MovieInTheatre theatreMovie, HttpSession session) {
-		if (session.getAttribute("activeAdmin") != null) {
-			adminDAO.editMovieInTheatre(theatreMovie);
-		}
-		throw new CustomizedBadRequestException("Login First!x");
-
+	public void editMovieInTheatre(@RequestBody MovieInTheatre theatreMovie) {
+			if(!adminDAO.editMovieInTheatre(theatreMovie))
+			{
+				throw new CustomizedBadRequestException("Cannnot Edit!");
+			}
 	}
-
 	/*
 	 * 
 	 * 
 	 */
 	@RequestMapping(value = "editAddon", method = RequestMethod.PUT)
-	public void editAddonCost(@RequestBody Addons addon, HttpSession session) {
-		if (session.getAttribute("activeAdmin") != null) {
+	public void editAddonCost(@RequestBody Addons addon) {
 			adminDAO.editAddonCost(addon);
-		}
-		throw new CustomizedBadRequestException("Login First!x");
-
 	}
 
 	/*
@@ -203,14 +163,8 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping(value = "getTicketCount", method = RequestMethod.POST)
-	public int getTicketCount(@RequestBody BookedTicketsForParticularShow bookedTicketsForParticularShow,
-			HttpSession session) {
-		if (session.getAttribute("activeAdmin") != null) {
+	public int getTicketCount(@RequestBody BookedTicketsForParticularShow bookedTicketsForParticularShow) {
 			int checker = adminDAO.getTicketCountInAParticularShow(bookedTicketsForParticularShow);
 			return checker;
 		}
-		throw new CustomizedBadRequestException("Login First!x");
-
-	}
-
 }

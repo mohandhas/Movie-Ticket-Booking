@@ -39,7 +39,6 @@ public class UserController {
 		if (!userDAOImpl.register(user)) {
 			throw new CustomizedBadRequestException("Not Registered");
 		}
-
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST)
