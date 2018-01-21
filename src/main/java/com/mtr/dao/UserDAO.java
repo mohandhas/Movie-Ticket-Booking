@@ -13,13 +13,15 @@ public interface UserDAO {
 	
 	void setDataSource(DataSource dataSource);
 
-	public void register(User user);
+	public boolean register(User user);
+	
+	public boolean editUserDetails(User user);
 	
 	public User login(String name, String password);
 		
-	public void addTicket(Ticket ticket);
+	public boolean addTicket(Ticket ticket);
 	
-	public void updateRatings(Ratings rating);
+	public boolean updateRatings(Ratings rating);
 	
 	public List<String> getBookedTickets(BookedTicketsForParticularShow bookedTickets);
 	

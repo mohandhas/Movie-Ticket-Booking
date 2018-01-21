@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
--- Host: localhost    Database: onlinemovieticket
+-- Host: localhost    Database: onlineMovieTicket
 -- ------------------------------------------------------
--- Server version	5.7.20-log
+-- Server version	5.7.20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,31 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `ADDONS`
+--
+
+DROP TABLE IF EXISTS `ADDONS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ADDONS` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ITEM_NAME` varchar(45) NOT NULL,
+  `COST` decimal(10,0) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ADDONS`
+--
+
+LOCK TABLES `ADDONS` WRITE;
+/*!40000 ALTER TABLE `ADDONS` DISABLE KEYS */;
+INSERT INTO `ADDONS` VALUES (1,'Popcorn Large',100),(2,'Popcorn Small',80),(3,'Pepsi',50),(4,'Veg Puffs',50),(5,'Coke',50),(6,'Veg Burger',70);
+/*!40000 ALTER TABLE `ADDONS` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `admin`
@@ -35,6 +60,7 @@ CREATE TABLE `admin` (
 
 LOCK TABLES `admin` WRITE;
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES ('admin','admin');
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,6 +84,7 @@ CREATE TABLE `genre` (
 
 LOCK TABLES `genre` WRITE;
 /*!40000 ALTER TABLE `genre` DISABLE KEYS */;
+INSERT INTO `genre` VALUES (1,'Action'),(2,'Adventure'),(3,'Comedy'),(4,'Crime'),(5,'Drama'),(6,'Historical'),(7,'Horror'),(8,'Mystery'),(9,'Romance'),(10,'Fiction'),(11,'Social'),(12,'Thriller');
 /*!40000 ALTER TABLE `genre` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,6 +111,7 @@ CREATE TABLE `genre_movie` (
 
 LOCK TABLES `genre_movie` WRITE;
 /*!40000 ALTER TABLE `genre_movie` DISABLE KEYS */;
+INSERT INTO `genre_movie` VALUES (10,1),(9,2),(10,2),(11,2),(9,3),(10,3),(11,3),(9,5),(11,9);
 /*!40000 ALTER TABLE `genre_movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,7 +130,7 @@ CREATE TABLE `movie` (
   `MOVIE_DURATION` int(11) NOT NULL,
   PRIMARY KEY (`MOVIE_ID`),
   UNIQUE KEY `UNIQUE_INDEX` (`MOVIE_ID`,`MOVIE_NAME`,`MOVIE_DURATION`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,6 +139,7 @@ CREATE TABLE `movie` (
 
 LOCK TABLES `movie` WRITE;
 /*!40000 ALTER TABLE `movie` DISABLE KEYS */;
+INSERT INTO `movie` VALUES (9,'Baahubali',0,0,180),(10,'Rambo',0,0,150),(11,'Cars',0,0,120);
 /*!40000 ALTER TABLE `movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +158,7 @@ CREATE TABLE `theatre` (
   `NO_OF_SCREENS` int(11) NOT NULL,
   PRIMARY KEY (`THEATRE_ID`),
   UNIQUE KEY `index2` (`LATITUDE`,`LONGITUDE`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,6 +167,7 @@ CREATE TABLE `theatre` (
 
 LOCK TABLES `theatre` WRITE;
 /*!40000 ALTER TABLE `theatre` DISABLE KEYS */;
+INSERT INTO `theatre` VALUES (10,'PVR Inorbit- Cyberabad',78.3781869,17.4488768,2),(11,'Sangeetha Theatre',78.28660409999999,17.513520100000004,3);
 /*!40000 ALTER TABLE `theatre` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,6 +201,7 @@ CREATE TABLE `theatre_movie` (
 
 LOCK TABLES `theatre_movie` WRITE;
 /*!40000 ALTER TABLE `theatre_movie` DISABLE KEYS */;
+INSERT INTO `theatre_movie` VALUES ('T10M9',10,9,3,'2018-01-18','2018-01-26','18:00:00','21:00:00'),('T10M9',10,9,2,'2018-01-19','2018-01-29','14:00:00','17:00:00'),('T10M11',10,11,3,'2018-01-19','2018-01-29','10:00:00','12:00:00'),('T11M10',11,10,1,'2018-01-18','2018-01-20','11:00:00','13:30:00'),('T11M10',11,10,1,'2018-01-18','2018-01-20','14:00:00','16:30:00'),('T11M10',11,10,1,'2018-01-18','2018-01-20','18:00:00','20:30:00');
 /*!40000 ALTER TABLE `theatre_movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -196,6 +227,7 @@ CREATE TABLE `ticket_booking` (
 
 LOCK TABLES `ticket_booking` WRITE;
 /*!40000 ALTER TABLE `ticket_booking` DISABLE KEYS */;
+INSERT INTO `ticket_booking` VALUES ('T10M9','harish@gmail.com','A4','2018-01-24','18:00:00'),('T10M9','harish@gmail.com','A5','2018-01-24','18:00:00'),('T10M9','harish@gmail.com','A6','2018-01-24','18:00:00'),('T10M9','harish@gmail.com','A7','2018-01-24','18:00:00'),('T10M9','harish@gmail.com','A8','2018-01-24','18:00:00');
 /*!40000 ALTER TABLE `ticket_booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,7 +246,7 @@ CREATE TABLE `user` (
   `PHONE` varchar(45) NOT NULL,
   PRIMARY KEY (`USER_ID`),
   UNIQUE KEY `unique_phone` (`PHONE`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,6 +255,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (11,'Mohandhas','mohandhas@mail.com','sathya123','975467382'),(12,'sathya','sathya@mail.com','sathya123','975464582');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -249,15 +282,16 @@ CREATE TABLE `user_genre` (
 
 LOCK TABLES `user_genre` WRITE;
 /*!40000 ALTER TABLE `user_genre` DISABLE KEYS */;
+INSERT INTO `user_genre` VALUES (12,1),(11,2),(12,2),(11,3),(12,3),(11,5);
 /*!40000 ALTER TABLE `user_genre` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'onlinemovieticket'
+-- Dumping events for database 'onlineMovieTicket'
 --
 
 --
--- Dumping routines for database 'onlinemovieticket'
+-- Dumping routines for database 'onlineMovieTicket'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -269,4 +303,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-19  1:30:23
+-- Dump completed on 2018-01-21 12:24:10
