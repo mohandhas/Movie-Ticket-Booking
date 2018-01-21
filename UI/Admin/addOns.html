@@ -1,0 +1,41 @@
+<form class="form-horizontal" name="form1">
+  <div class="widget-box">
+    <div class="widget-title">
+      <span class="icon">
+        <i class="icon-align-justify"></i>
+      </span>
+      <h5>Add-ons Information</h5>
+    </div>
+    <div class="widget-content nopadding">
+
+      <div class="control-group">
+        <label class="control-label">Product Name :</label>
+        <div class="controls">
+          <input type="text" class="span11" placeholder="Producr Name" style="width:90%;height:30px" ng-model="product_name" autofocus
+            required/>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Price :</label>
+
+        <div class="controls">
+          <input type="number" id="price" placeholder="Price" style="width:10%;height:30px" ng-model="product_price" min="1" max="1000"
+            required/>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+
+        <table border="0" style="width: 50%">
+          <tr>
+            <td style="text-align: right">
+              <button class="btn btn-success" ng-click="addAddOns()">ADD</button>
+            </td>
+          </tr>
+        </table>
+
+      </div>
+
+    </div>
+</form>

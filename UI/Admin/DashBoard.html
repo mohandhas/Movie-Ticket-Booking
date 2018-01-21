@@ -1,0 +1,107 @@
+<form class="form">
+  <div class="tip-bottom" style="width:1000px;margin-left:10% ">
+    <div class="control-group">
+      <table style="width:80%;align-items: center; text-align: center">
+        <tr style="border-spacing: 50px">
+          <td>
+            <label class="control-label"> Theatre Name </label>
+          </td>
+          <td>
+            <label class="control-label">Date </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="controls">
+              <select ng-options="theatre.name for theatre in theatreDetails" ng-model="theatreSelect" ng-change="dataChange()" autofocus>
+
+
+              </select>
+            </div>
+          </td>
+          <td>
+            <div class="controls">
+              <input type="date" class="datepicker span11" style="width:200px;height:30px" ng-model="datefrom" ng-change="dataChange()">
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</form>
+
+<div class=" container-fluid ">
+  <hr>
+  <div class="row-fluid ">
+    <div class="span12 ">
+
+      <div class="widget-box ">
+        <div class="widget-title ">
+          <span class="icon ">
+            <i class="icon-th "></i>
+          </span>
+          <h5>Data table</h5>
+        </div>
+        <div class="widget-content nopadding ">
+          <table class="table table-bordered data-table ">
+            <thead>
+              <tr>
+                <th style="width:30% ">Movie Name</th>
+                <th style="width:15% ">Duration(Mins)</th>
+                <th style="width:13% ">Rating</th>
+                <th style="width:12% ">Count </th>
+                <th style="width:15% ">Show Time</th>
+                <th style="width:15% ">Status</th>
+              </tr>
+            </thead>
+            <tbody ng-repeat="value in values">
+              <tr class="gradeX ">
+                <td>{{value.movieName}}</td>
+                <td>{{value.duration}}</td>
+                <td>{{value.rating}}</td>
+                <td>{{value.count}}</td>
+                <td>{{value.showTime}}</td>
+                <td style="height: 20px">
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" ng-click="showAvailability(value.movieId,value.showTime)">Status</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Ticket Status</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Available</th>
+              <th>Booked</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align: center">{{450-Booked}}</td>
+              <td style="text-align: center">{{Booked}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

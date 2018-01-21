@@ -1,0 +1,96 @@
+<div class="col-sm-4">
+
+
+</div>
+<div class="col-sm-4" ng-controller="registerController">
+    <form>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="name" class="form-control" id="Name" ng-model="name" aria-describedby="emailHelp" placeholder="Enter name" required>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="Email" ng-model="email" aria-describedby="emailHelp" placeholder="Enter email"
+                required>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Contact Number</label>
+            <input type="text" class="form-control" ng-model="number" id="Number" placeholder="Number" required>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" ng-model="password" id="Password" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <label for="confirmation">Re-enter Password</label>
+            <input type="password" class="form-control" ng-model="repassword" id="Re-Password" placeholder="Re-enter Password" required>
+        </div>
+
+        <div class="form-group" id="genre">
+            <div class="col-sm-12">
+                <label for "Genre">Select a Genre</label>
+            </div>
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="1">Action</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="7">Horror</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="3">Comedy</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="11">Social</label>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="12">Thriller</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="2">Adventure</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="5">Drama</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="4">Crime</label>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="8">Mystery</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="9">Romance</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="10">Fiction</label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="6">Historical</label>
+                </div>
+
+            </div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <button type="button" ng-click="register()" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>

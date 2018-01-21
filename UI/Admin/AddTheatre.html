@@ -1,0 +1,65 @@
+<form class="form-horizontal" name="form1">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon">
+                <i class="icon-align-justify"></i>
+            </span>
+            <h5>Theatre Information</h5>
+        </div>
+        <div class="widget-content nopadding">
+
+            <div class="control-group">
+                <label class="control-label">Theatre Name :</label>
+                <div class="controls">
+                    <input type="text" class="span11" placeholder="First name" style="width:90%;height:30px" ng-model="theatre" autofocus required/>
+                </div>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <div class="control-group">
+                            <label class="control-label">Latitude :</label>
+
+                            <div class="controls">
+                                <input type="number" id="time" placeholder="Lat" style="width:80%;height:30px" step=".0000000001" ng-model="latitude" min=0
+                                    max=100 required/>
+                            </div>
+
+                        </div>
+                    </td>
+                    <td>
+                        <div class="control-group">
+                            <label class="control-label">Longitude :</label>
+
+                            <div class="controls">
+                                <input type="number" id="time" placeholder="Lon" style="width:80%;height:30px" step=".0000000001" ng-model="longitude" min=0
+                                    max=100 required/>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="control-group">
+                <label class="control-label">No of Screen :</label>
+                <div class="controls">
+                    <input type="number" class="span11" placeholder="0" style="width:60px;height:30px" max="10" min="1" ng-model="screen" required/>
+                </div>
+            </div>
+
+
+
+        </div>
+        <div class="form-actions">
+            <table border="0" style="width: 50%">
+                <tr>
+                    <td style="text-align: right">
+                        <button class="btn btn-success" ng-click="addTheatres()">ADD</button>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+</form>

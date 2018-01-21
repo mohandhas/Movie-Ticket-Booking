@@ -1,0 +1,100 @@
+<form class="form-horizontal" name="form1">
+  <div class="widget-box">
+    <div class="widget-title">
+      <span class="icon">
+        <i class="icon-align-justify"></i>
+      </span>
+      <h5>Movie Information</h5>
+    </div>
+    <div class="widget-content nopadding">
+      <form class="form-horizontal" name="form1">
+        <div class="control-group">
+          <label class="control-label">Movie Name :</label>
+          <div class="controls">
+            <input type="text" class="span11" placeholder="First name" style="width:90%;height:30px" ng-model="movie" autofocus />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" ng-model="duration">Duration :</label>
+
+          <div class="controls">
+            <input type="number" id="time" placeholder="Min" style="width:60px;height:30px" min=1 max="999" ng-model="duration" required
+            />
+
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Genres :</label>
+
+          <div class="controls">
+            <label>
+              <table>
+                <tr>
+                  <td style="width:100px">
+                    <input type="checkbox" name="radios[]" value="1" />&nbsp&nbspAction
+                  </td>
+                  <td style="width:100px">
+                    <input type="checkbox" name="radios[]" value="2" />&nbsp&nbspAdventure
+                  </td>
+                  <td style="width:100px">
+                    <input type="checkbox" name="radios[]" value="3" />&nbsp&nbspComedy
+                  </td>
+                  <td style="width:100px">
+                    <input type="checkbox" name="radios[]" value="4" />&nbsp&nbspCrime
+                  </td>
+                  <td style="width:100px">
+                    <input type="checkbox" name="radios[]" value="5" />&nbsp&nbspDrama
+                  </td>
+                  <td style="width:100px">
+                    <input type="checkbox" name="radios[]" value="6" />&nbsp&nbspHistorical
+                  </td>
+
+                </tr>
+
+                <tr>
+                  <td colspan="6" style="width: 1px">
+                    <hr>
+                  </td>
+                </tr>
+                <tr>
+
+                  <td style="width:100px">
+                    <input type="checkbox" name="radios[]" value="7" />&nbsp&nbspHorror
+                  </td>
+                  <td>
+                    <input type="checkbox" name="radios[]" value="8" />&nbsp&nbspMystery
+                  </td>
+
+                  <td>
+                    <input type="checkbox" name="radios[]" value="9" />&nbsp&nbspRomance
+                  </td>
+                  <td>
+                    <input type="checkbox" name="radios[]" value="10" />&nbsp&nbspFiction
+                  </td>
+                  <td>
+                    <input type="checkbox" name="radios[]" value="11" />&nbsp&nbspSocial
+                  </td>
+                  <td>
+                    <input type="checkbox" name="radios[]" value="12" />&nbsp&nbspThriller
+
+                  </td>
+
+                </tr>
+              </table>
+          </div>
+        </div>
+    </div>
+    <div class="form-actions">
+
+      <table border="0" style="width: 50%">
+        <tr>
+          <td style="text-align: right">
+            <button class="btn btn-success" ng-click="addmovies()">Add</button>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+  </form>
