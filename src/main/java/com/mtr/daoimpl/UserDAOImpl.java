@@ -142,7 +142,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	public boolean updateRatings(Ratings rating) {
-		int checker = 0;
+		int checker = 1;
 		try {
 			Movie movie = getMovie(rating.getMovieId());
 			if (movie == null) {
@@ -156,7 +156,7 @@ public class UserDAOImpl implements UserDAO {
 		} catch (Exception e) {
 			checker = 0;
 		}
-		if (checker == 0) {
+		if(checker == 0) {
 			return false;
 		}
 		return true;

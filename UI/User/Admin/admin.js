@@ -31,7 +31,6 @@ app.controller('checkLogin', function ($scope, $window, $location, $rootScope, $
                 $rootScope.loggedIn = true;
                 $window.sessionStorage.setItem("userName", $scope.userName);
                 $window.location.href = 'home.html';
-                $window.alert('successfull')
             } else {
                 $window.alert("wrong id or password");
             }
