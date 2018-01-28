@@ -37,7 +37,7 @@ public class AdminDAOImpl implements AdminDAO {
 
 	}
 
-	private Admin findAdmin(String id) {
+	public Admin findAdmin(String id) {
 		Admin checker;
 		try {
 			String sql = "SELECT * FROM ADMIN WHERE ADMIN_ID=?";
@@ -358,6 +358,55 @@ public class AdminDAOImpl implements AdminDAO {
 			return false;
 		}
 		logger.info("Price Updated!-");
+		return true;
+	}
+
+	@Override
+	public boolean editMovie(Movie movie) {
+		int checker;
+		try {
+			String sql = "UPDATE MOVIE SET MOVIE_NAME=?, MOVIE_DURATION=? WHERE MOVIE_ID=?";
+			checker = jdbcTemplate.update(sql, movie.getName(), movie.getDuration(),movie.getId());
+			
+			for (int i = 0; i < movie.getGenre().size(); i++) {
+				String sql2 = "UPDATE GENRE_MOVIE SET GENRE_ID=? WHERE MOVIE_ID=?";
+				jdbcTemplate.update(sql2, movie.getId(), movie.getGenre().get(i));
+			}
+		} catch (Exception e) {
+			checker = 0;
+		}
+
+		if (checker == 0) {
+			logger.error("Movie Not edited Successfully!");
+			return false;
+		}
+		logger.info("Movie Edited Successfully!");
+		return true;
+	}
+
+	@Override
+	public boolean deleteMovie(int id) {
+		int checker;
+		try {
+			
+			String sql2 = "DELETE FROM GENRE_MOVIE WHERE MOVIE_ID=?";
+			checker=jdbcTemplate.update(sql2,id);
+			
+			String sql3 = "DELETE FROM THEATRE_MOVIE WHERE MOVIE_ID=?";
+			checker=jdbcTemplate.update(sql3,id);
+
+			String sql = "DELETE FROM MOVIE WHERE MOVIE_ID=?";
+			checker = jdbcTemplate.update(sql, id);
+	
+		} catch (Exception e) {
+			checker = 0;
+		}
+
+		if (checker == 0) {
+			logger.error("Movie Not Deleted Successfully!");
+			return false;
+		}
+		logger.info("Movie Deleted Successfully!");
 		return true;
 	}
 }

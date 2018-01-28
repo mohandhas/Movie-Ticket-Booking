@@ -40,5 +40,9 @@ public interface AdminDAO {
 
 	public boolean editAddonCost(Addons addon);
 
+	public boolean editMovie(Movie movie);
+
+	public boolean deleteMovie(int id);
+
 
 }
