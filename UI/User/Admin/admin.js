@@ -44,29 +44,40 @@ app.controller('checkLogin', function ($scope, $window, $location, $rootScope, $
 
 
 //control for adding movie in database
-app.controller('addMovie', function ($scope, $http, addmov) {
+app.controller('addMovie', function ($scope, $window, $http, addmov) {
     $scope.movie;
     $scope.duration;
     $scope.genre = [];
     $scope.addmovies = function () {
+
         var list = document.querySelectorAll("input[name^='radios[']:checked");
+        if ($scope.movie == null || $scope.movie == "")
+            $window.alert("Enter Movie name First");
+        else if ($scope.duration == null || $scope.duration == "")
+            $window.alert("Add Duration");
+        else if ($scope.duartaion < 1 || $scope.duration > 500)
+            $window.alert("Duration Between 1-500");
+        else if (list.length == 0)
+            $window.alert("Select Gendre first");
+        else {
+            for (var i = 0; i < list.length; i++)
+                $scope.genre.push(list[i].value);
 
-        for (var i = 0; i < list.length; i++)
-            $scope.genre.push(list[i].value);
+            var data = {
+                'name': $scope.movie,
+                'duration': $scope.duration,
+                'genre': $scope.genre
+            }
+            addmov.addmovi(data).then(function () {
 
-        var data = {
-            'name': $scope.movie,
-            'duration': $scope.duration,
-            'genre': $scope.genre
+                $scope.movie = "";
+                $scope.duration = "";
+                $('input:checkbox').removeAttr('checked');
+
+
+            });
         }
-        addmov.addmovi(data).then(function () {
 
-            $scope.movie = "";
-            $scope.duration = "";
-            $('input:checkbox').removeAttr('checked');
-
-
-        });
 
 
     }
@@ -84,26 +95,28 @@ app.service('addmov', ['$http', '$window', '$route', function ($http, $window, $
 
         })
 
-    }
+    };
 
 }]);
 //index Controller
-app.controller('homeController', function ($rootScope, $window, $scope) {
+app.controller('homeController', function ($rootScope, $window, $scope, $location) {
 
     $rootScope.session = $window.sessionStorage.getItem("userName");
-    if ($rootScope.session == "" || $rootScope.session == null)
-        $window.location.href = ('/admin/index.html');
+    if ($rootScope.session === "" || $rootScope.session === null)
+        $window.location.href = '/Admin/index.html';
+    else
+        $location.url("/dashboard");
     $scope.logOutAdmin = function () {
+
         $window.sessionStorage.removeItem("userName");
-        $window.history.back();
+        $window.location.href = '/Admin/index.html';
 
     }
 });
 
 //Dashboard Controller
 app.controller('dashboardController', function ($rootScope, $window, $scope, $http, dashboardService, movThe) {
-    if ($rootScope.session == "" || $rootScope.session == null)
-        $window.location.href = ('/admin/index.html');
+
     $rootScope.dateAdd = 24 * 60 * 60 * 1000;
     $scope.theatreSelect = null;
     $scope.datefrom = null;
@@ -178,24 +191,42 @@ app.service('dashboardService', ['$http', function ($http) {
 
 
 //control for adding Theatre in database
-app.controller('addTheatre', function ($scope, $http, addThe) {
+app.controller('addTheatre', function ($scope, $window, $http, addThe) {
     $scope.theatre;
     $scope.latitude;
     $scope.longitude;
     $scope.screen;
     $scope.addTheatres = function () {
+        if ($scope.theatre == null || $scope.theatre == "")
+            $window.alert("Add Theatre name first");
+        else if ($scope.latitude == null || $scope.latitude == "")
+            $window.alert("Add latitude value first");
+        else if ($scope.latitude < 0.0000000001 || $scope.latitude > 100)
+            $window.alert("Latitude value must be between 0-100");
+        else if ($scope.longitude == null || $scope.longitude == "")
+            $window.alert("Add longitude value first");
+        else if ($scope.longitude < 0.0000000001 || $scope.longitude > 100)
+            $window.alert("longitude value must be between 0-100");
+        else if ($scope.screen == null || $scope.screen == "")
+            $window.alert("Add Screen Value");
+        else if ($scope.screen < 0 || $scope.screen > 10)
+            $window.alert("Screen value must between 1-10");
+        else {
 
-        var data = {
-            'name': $scope.theatre,
-            'latitude': $scope.latitude,
-            'longitude': $scope.longitude,
-            'numberOfScreen': $scope.screen
+
+
+            var data = {
+                'name': $scope.theatre,
+                'latitude': $scope.latitude,
+                'longitude': $scope.longitude,
+                'numberOfScreen': $scope.screen
+            }
+            addThe.addThea(data)
+            $scope.theatre = "";
+            $scope.latitude = "";
+            $scope.longitude = "";
+            $scope.screen = "";
         }
-        addThe.addThea(data)
-        $scope.theatre = "";
-        $scope.latitude = "";
-        $scope.longitude = "";
-        $scope.screen = "";
 
     }
 });
@@ -247,7 +278,7 @@ app.service('addOns', ['$http', '$window', '$route', function ($http, $window, $
 }]);
 
 //control for MovieTheater in database
-app.controller('movieTheatre', function ($rootScope, $scope, $http, movThe) {
+app.controller('movieTheatre', function ($rootScope, $route, $window, $scope, $http, movThe) {
     //Fetching movie Detail
 
     $scope.movData = movThe.getMov().then(function (data) {
@@ -269,23 +300,44 @@ app.controller('movieTheatre', function ($rootScope, $scope, $http, movThe) {
     $scope.dateto;
     $scope.addMovieTheatre = function () {
         $rootScope.dateAdd = 24 * 60 * 60 * 1000;
-        //formating all date and time in theatre
-        $scope.newdatefrom = new Date(new Date($scope.datefrom.getTime() + $rootScope.dateAdd));
-        $scope.newdatefrom = $scope.newdatefrom.toISOString().substr(0, 10);
-        $scope.newdateto = new Date(new Date($scope.dateto.getTime() + $rootScope.dateAdd));
-        $scope.newdateto = $scope.newdateto.toISOString().substr(0, 10);
-        $scope.newtimefrom = $scope.timefrom.toString().substr(15, 16);
-        $scope.newtimefrom = $scope.newtimefrom.substr(1, 8);
-        //make a object for data inserting
-        var data = {
-            'theatreId': $scope.theatreSelect.id,
-            'movieId': $scope.movieSelect.id,
-            'screen': $scope.screenSelect,
-            'startDate': $scope.newdatefrom,
-            'endDate': $scope.newdateto,
-            'startTime': $scope.newtimefrom
+        if ($scope.theatreSelect == null || $scope.theatreSelect == "")
+            $window.alert("Select Theatre First");
+        else if ($scope.movieSelect.name == null || $scope.movieSelect.name == "")
+            $window.alert("Select Movie First");
+        else if ($scope.screenSelect == null || $scope.screenSelect == "")
+            $window.alert("Select Screen First");
+        else if ($scope.datefrom.getTime() == null || $scope.datefrom.getTime() == "")
+            $window.alert("Select Date From First");
+        else if ($scope.dateto.getTime() == null || $scope.dateto.getTime() == "")
+            $window.alert("Select Date to First");
+        else if ($scope.timefrom == null || $scope.timefrom == "")
+            $window.alert("Select Time From First");
+        else {
+            //formating all date and time in theatre
+            $scope.newdatefrom = new Date(new Date($scope.datefrom.getTime() + $rootScope.dateAdd));
+            $scope.newdatefrom = $scope.newdatefrom.toISOString().substr(0, 10);
+            $scope.newdateto = new Date(new Date($scope.dateto.getTime() + $rootScope.dateAdd));
+            $scope.newdateto = $scope.newdateto.toISOString().substr(0, 10);
+            $scope.newtimefrom = $scope.timefrom.toString().substr(15, 16);
+            $scope.newtimefrom = $scope.newtimefrom.substr(1, 8);
+
+            //make a object for data inserting
+            var data = {
+                'theatreId': $scope.theatreSelect.id,
+                'movieId': $scope.movieSelect.id,
+                'screen': $scope.screenSelect,
+                'startDate': $scope.newdatefrom,
+                'endDate': $scope.newdateto,
+                'startTime': $scope.newtimefrom
+            }
+            movThe.addMovThea(data).then(function (response) {
+                $scope.datefrom = null;
+                $scope.timefrom = null;
+                $scope.dateto = null;
+
+            });
+
         }
-        movThe.addMovThea(data)
 
     }
 
@@ -293,7 +345,7 @@ app.controller('movieTheatre', function ($rootScope, $scope, $http, movThe) {
 
 
 //Service for MovieTheater in database
-app.service('movThe', ['$http', '$window', '$route', function ($http, $window, $route) {
+app.service('movThe', ['$http', '$window', function ($http, $window) {
     //fetch detail of all movie
     this.getMov = function () {
         return (
@@ -311,7 +363,7 @@ app.service('movThe', ['$http', '$window', '$route', function ($http, $window, $
     this.getThe = function () {
         return (
             $http.get("/MovieTicketBooking/listTheatres").success(function (response) {
-                
+
                 return (response.data);
             }).error(function (response) {
                 return (response);
@@ -319,16 +371,96 @@ app.service('movThe', ['$http', '$window', '$route', function ($http, $window, $
         );
     }
     this.addMovThea = function (data) {
+        return (
+            $http.post('/MovieTicketBooking/addMovieInTheatre', data).success(function (response) {
 
-        $http.post('/MovieTicketBooking/addMovieInTheatre', data).success(function () {
-            $window.alert('Successfull')
-            $route.reload();
-        }).error(function () {
-            $window.alert("Time Mismatching");
-            $route.reload();
-        });
+                $window.alert('Successfull')
+                return response;
+            }).error(function () {
+                $window.alert("Time Mismatching");
+                return response;
+            })
+        );
     }
 
+}]);
+//For All Movie 
+app.controller('getAllMovie', function ($scope, $http, $route, fetchMovie) {
+    $scope.id;
+    $scope.name;
+    $scope.duration;
+    $scope.isHidden = true;
+    $scope.dataMov = fetchMovie.getAll().then(function (data) {
+        $scope.details = data.data;
+
+    })
+    $scope.delet = function (id) {
+        fetchMovie.deleteMov(id).then(function (data) {
+            $scope.details = $scope.details.filter(function (e) {
+                return e.id != id;
+            })
+        })
+
+
+    }
+    $scope.updateFunc = function (id, name, duration) {
+        $scope.id = id;
+        $scope.name = name;
+        $scope.duration = duration;
+        $scope.isHidden = false;
+
+
+    }
+    $scope.doUpdate = function () {
+        var dat = {
+            "id": $scope.id,
+            "name": $scope.name,
+            "duration": $scope.duration
+        };
+        fetchMovie.doUpdateMovie(dat);
+        detail = $scope.details.find(function (e) {
+            return e.id == dat.id;
+        });
+        detail.name = dat.name;
+        detail.duration = dat.duration;
+        $scope.isHidden = true;
+        $scope.id = "";
+        $scope.name = "";
+        $scope.duration = "";
+    }
+});
+
+app.service('fetchMovie', ['$http', function ($http) {
+    this.getAll = function () {
+        return (
+
+            $http.get("/MovieTicketBooking/listMovies").success(function (response) {
+
+                return (response.data);
+            }).error(function (response) {
+                return (response);
+            })
+        );
+    }
+    this.deleteMov = function (id) {
+        return (
+            $http.delete("/MovieTicketBooking/deleteMovie/" + id).then(function (response) {
+
+                return response;
+            }, function (response) {
+                alert("Can't Delete");
+                return response;
+            }));
+
+    }
+    this.doUpdateMovie = function (data) {
+        $http.put("/MovieTicketBooking/editMovie", data).then(function () {
+            alert("Movie Updated");
+        }, function () {
+            alert("Cant Update");
+        })
+
+    }
 }]);
 
 app.config(function ($routeProvider, $locationProvider) {
@@ -336,31 +468,36 @@ app.config(function ($routeProvider, $locationProvider) {
     $routeProvider
 
         .when('/dashboard', {
-            templateUrl: '/admin/DashBoard.html',
+            templateUrl: '/Admin/DashBoard.html',
             controller: 'dashboardController',
 
         })
 
         .when('/AddMovie', {
-            templateUrl: '/admin/AddMovie.html',
+            templateUrl: '/Admin/AddMovie.html',
             controller: 'addMovie',
 
         })
         .when('/AddTheatre', {
-            templateUrl: '/admin/AddTheatre.html',
+            templateUrl: '/Admin/AddTheatre.html',
             controller: 'addTheatre',
 
         })
         .when('/AddOns', {
-            templateUrl: '/admin/addOns.html',
+            templateUrl: '/Admin/addOns.html',
             controller: 'addAddOns',
 
         })
+        .when('/AllMovies', {
+            templateUrl: '/Admin/allMovie.html',
+            controller: 'getAllMovie',
+
+        })
         .when('/Movie_Theatre', {
-            templateUrl: '/admin/MovieTheatre.html',
+            templateUrl: '/Admin/MovieTheatre.html',
             controller: 'movieTheatre',
 
-        }).otherwise({ redirectTo: '/' });
+        }).otherwise({ redirectTo: '/Admin/' });
     $locationProvider.html5Mode({
         enabled: true,
         requireBase: false

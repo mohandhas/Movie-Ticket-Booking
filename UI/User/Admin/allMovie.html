@@ -1,0 +1,88 @@
+<div class="container" ng-hide="isHidden" ng-show="isHidden">
+  <form class="form-horizontal" name="form1">
+    <div class="widget-box">
+      <div class="widget-title">
+        <span class="icon">
+          <i class="icon-align-justify"></i>
+        </span>
+        <h5>Update Movie</h5>
+      </div>
+      <div class="widget-content nopadding">
+        <form class="form-horizontal" name="form1">
+          <div class="control-group">
+            <label class="control-label">Movie Name :</label>
+            <div class="controls">
+              <input type="text" class="span11" placeholder="First name" style="width:90%;height:30px" ng-model="name" autofocus />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" ng-model="duration">Duration :</label>
+
+            <div class="controls">
+              <input type="number" id="time" placeholder="Min" style="width:60px;height:30px" min=1 max="999" ng-model="duration" required
+              />
+
+            </div>
+          </div>
+      </div>
+      <div class="form-actions">
+
+        <table border="0" style="width: 50%">
+          <tr>
+            <td style="text-align: right">
+              <button class="btn btn-success" ng-click="doUpdate()">Add</button>
+            </td>
+          </tr>
+        </table>
+
+      </div>
+
+    </div>
+    </form>
+</div>
+<br>
+<br>
+<div class=" container-fluid " style="width:80%">
+  <hr>
+  <div class="row-fluid ">
+    <div class="span12 ">
+
+      <div class="widget-box ">
+        <div class="widget-title ">
+          <span class="icon ">
+            <i class="icon-th "></i>
+          </span>
+          <h5>Data table</h5>
+        </div>
+        <div class="widget-content nopadding ">
+          <table class="table table-bordered data-table ">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>DURATION</th>
+                <th style="width:150px">ACTION</th>
+              </tr>
+            </thead>
+            <tbody ng-repeat="detail in details">
+              <tr>
+                <td>{{detail.id}}</td>
+                <td>{{detail.name}}</td>
+                <td>{{detail.duration}}</td>
+                <td>
+                  <button class="btn btn-info" ng-click="updateFunc(detail.id,detail.name,detail.duration)">Edit</button>
+                  <button class="btn btn-warning" ng-click="delet(detail.id)">Delete</button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+<br>
+<br>
