@@ -1,3 +1,41 @@
+<style>
+    .sidenav {
+    height: 80%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+
+    left: 0;
+    background-color: #E1F7E7;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav div {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    /* font-size: 25px; */
+    color: #818181;
+    display: block;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.main {
+    margin-left: 160px; /* Same as the width of the sidenav */
+    /* font-size: 28px; Increased text to enable scrolling */
+    padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+</style>
+
+
 <div ng-controller="moviesController">
     <div class="modal" id="modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog model-lg" role="document">
@@ -35,15 +73,16 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-8 container">
-        <div class="col-sm-6 panel panel-default" ng-show="show(movies.indexOf(movie))" style="background:rgb(250, 200, 200);" ng-repeat="movie in movies">
-            <div class="row" style="background:rgb(231, 133, 133);">
+    <div class="col-sm-8 container main">
+        <div class="col-sm-6 panel panel-default" ng-show="show(movies.indexOf(movie))" style="background:#A9E8DC;" ng-repeat="movie in movies">
+            <div class="panel-heading" style="background:#0284A8;">
 
                 <h4 class="text-center">
                     <strong>{{movie.movieName}}</strong>
                 </h4>
 
             </div>
+            <div class="panel-default">
             <br>
             <div class="row">
                 <div class="col-sm-8">
@@ -84,14 +123,14 @@
             <br>
             <br>
 
-            <!-- <div class="row">
-            <button type="button" class="btn btn-danger btn-lg btn-block">BOOK</button>
-        </div> -->
+           </div>
         </div>
     </div>
-    <div class="col-sm-4">
-        <div class="checkbox" ng-repeat= "genre in genres"><label>
-        <input type="checkbox" id="{{genres.indexOf(genre)}}" ng-click="change(this)">{{genre}}</input></label>
-    </div>
+    <div class="sidenav">
+        <div class="checkbox" ng-repeat="genre in genres">
+            <label>
+                <input type="checkbox" id="{{genres.indexOf(genre)}}" ng-click="change(this)">{{genre}}</input>
+            </label>
+        </div>
     </div>
 </div>

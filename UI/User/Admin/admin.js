@@ -158,7 +158,8 @@ app.service('dashboardService', ['$http', function ($http) {
         return (
             $http.post('/MovieTicketBooking/getMovieInTheatre', data).success(function (response) {
                 return (response);
-            }).error(function (response, status) {
+            })
+            .error(function (response, status) {
 
                 return (status);
             })
@@ -169,7 +170,8 @@ app.service('dashboardService', ['$http', function ($http) {
         return (
             $http.post('/MovieTicketBooking/getTicketCount', data).success(function (response) {
                 return (response);
-            }).error(function (response, status) {
+            })
+            .error(function (response, status) {
                 return (status);
             })
         );
@@ -293,7 +295,7 @@ app.controller('movieTheatre', function ($rootScope, $scope, $http, movThe) {
 
 
 //Service for MovieTheater in database
-app.service('movThe', ['$http', '$window', '$route', function ($http, $window, $route) {
+app.service('movThe', ['$http', '$window', '$route','$state', function ($http, $window, $route,$state) {
     //fetch detail of all movie
     this.getMov = function () {
         return (
@@ -322,7 +324,7 @@ app.service('movThe', ['$http', '$window', '$route', function ($http, $window, $
 
         $http.post('/MovieTicketBooking/addMovieInTheatre', data).success(function () {
             $window.alert('Successfull')
-            $route.reload();
+            $state.reload();
         }).error(function () {
             $window.alert("Time Mismatching");
             $route.reload();
@@ -360,7 +362,7 @@ app.config(function ($routeProvider, $locationProvider) {
             templateUrl: '/admin/MovieTheatre.html',
             controller: 'movieTheatre',
 
-        }).otherwise({ redirectTo: '/' });
+        })
     $locationProvider.html5Mode({
         enabled: true,
         requireBase: false

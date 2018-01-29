@@ -1,4 +1,4 @@
-var app = angular.module("myApp", ["ngRoute"]);
+var app = angular.module("myApp", ["ngRoute", "angular-growl", "ngMap"]);
 angular.module("myApp")
     .config(function ($routeProvider) {
         $routeProvider
@@ -32,9 +32,9 @@ angular.module("myApp")
             .when("/checkout", {
                 templateUrl: "checkout.html",
                 resolve: {
-                    "check": function ($location, $rootScope, layoutService) {
-                        
-                        if ($rootScope.email == undefined) {
+                    "check": function ($location, $window, layoutService) {
+
+                        if ($window.localStorage.email == undefined) {
                             $location.path("/guestLogin");
                         } else if (layoutService.bookedTickets.length == 0) {
                             $location.path("/");
@@ -63,6 +63,25 @@ angular.module("myApp")
                     }
                 }
             })
+            .when("/logout", {
+                resolve: {
+                    "check": function ($window, $location) {
+                        $window.localStorage.clear();
+                        $location.path("/login");
+                    }
+                }
+            })
+            .when("/profile", {
+                templateUrl: "profile.html",
+                controller: "profileController",
+                resolve: {
+                    "check": function ($location, $window) {
+                        if ($window.localStorage.loggedIn != "true") {
+                            $location.path("/");
+                        }
+                    }
+                }
+            })
             .otherwise({
                 templateUrl: "error404.html"
             })
@@ -86,53 +105,84 @@ app.service("layoutService", function () {
 
 
 
-app.controller("loginController", function ($scope, $location, $http, $rootScope, layoutService) {
+app.controller("loginController", function ($scope, $location, $http, $window, layoutService, growl, $timeout) {
 
     $scope.email = "";
     $scope.password = "";
     $scope.authenticate = function () {
 
-
-        $http({
-            method: 'POST',
-            url: "/MovieTicketBooking/login",
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            transformRequest: function (obj) {
-                var str = [];
-                for (var p in obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                return str.join("&");
-            },
-            data: {
-                "email": $scope.email,
-                "password": $scope.password
-            }
-        }).then(function (response) {
-            
-            if (response.status == 200) {
-                $rootScope.loggedIn = true;
-                $rootScope.email = $scope.email;
-                if (layoutService.bookedTickets.length > 0) {
-                    $location.path("/checkout");
-                } else {
-                    $location.path("/");
+        if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test($scope.email) == false) {
+            growl.error('Email is incorrect Please check it', {
+                title: 'Error',
+                ttl: 3000
+            });
+        } else {
+            $http({
+                method: 'POST',
+                url: "/MovieTicketBooking/login",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                transformRequest: function (obj) {
+                    var str = [];
+                    for (var p in obj)
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    return str.join("&");
+                },
+                data: {
+                    "email": $scope.email,
+                    "password": $scope.password
                 }
-            } else {
-                alert("wrong email or password");
-            }
-        }, function () {
-            alert("Wrong email or password");
-        });
-    }
+            }).then(function (response) {
 
+                if (response.status == 200) {
+                    $window.localStorage.loggedIn = true;
+                    $window.localStorage.email = $scope.email;
+                    $window.localStorage.name = response.data.name;
+                    $window.localStorage.phone = response.data.phone;
+                    $window.localStorage.genres = response.data.genres;
+
+                    $timeout(function () {
+                        growl.success('You Have Successfully Logged In', {
+                            title: 'Logged In',
+                            ttl: 2000
+                        });
+                    }, 500);
+
+                    if (layoutService.bookedTickets.length > 0) {
+                        $location.path("/checkout");
+                    } else {
+                        $location.path("/");
+                    }
+                } else {
+                    growl.error('Wrong Email or Password', {
+                        title: 'Error',
+                        ttl: 2000
+                    });
+
+                }
+            }, function () {
+                growl.error('Wrong Email or Password', {
+                    title: 'Error',
+                    ttl: 4000
+                });
+            });
+        }
+    }
 });
 
 
 
 
-app.controller("ticketController", function ($scope, $rootScope, layoutService) {
+app.controller("profileController", function ($scope, $window) {
+    $scope.email = $window.localStorage.email;
+    $scope.name = $window.localStorage.name;
+    $scope.phone = $window.localStorage.phone;
+    $scope.genres = $window.localStorage.genres;
+})
+
+
+app.controller("ticketController", function ($scope, layoutService) {
     $scope.theatre = "";
     var len = layoutService.theatres.length;
     for (var i = 0; i < len; i++) {
@@ -158,29 +208,42 @@ app.controller("ticketController", function ($scope, $rootScope, layoutService) 
 });
 
 
-app.controller("userCheckoutController", function ($scope, $rootScope, $location, $http, layoutService) {
+app.controller("userCheckoutController", function ($scope, $window, $location, $http, growl, layoutService) {
+    $scope.card = "";
+    $scope.cvv = "";
     $scope.checkOut = function () {
-        
-        for (var i = 0; i < layoutService.bookedTickets.length; i++) {
-            var data = {
-                "theatreMovieId": layoutService.theatreMovieId,
-                "email": $rootScope.email,
-                "date": layoutService.showDate,
-                "showTime": layoutService.showTime,
-                "seatNumber": layoutService.bookedTickets[i]
-            };
-            $http.post("/MovieTicketBooking/addTicket", data)
-                .then(function () {
-                    
-                    $location.path("/tickets");
-                })
+        if (/^\d{16,19}$/.test($scope.card) == false) {
+            growl.warning('Credit/Debit card details are incorrect', {
+                title: 'Error',
+                ttl: 3000
+            });
+        } else if (/^\d{3}$/.test($scope.cvv) == false) {
+            growl.warning('cvv details are incorrect', {
+                title: 'cvv incorrect',
+                ttl: 3000
+            });
+        } else {
+            for (var i = 0; i < layoutService.bookedTickets.length; i++) {
+                var data = {
+                    "theatreMovieId": layoutService.theatreMovieId,
+                    "email": $window.localStorage.email,
+                    "date": layoutService.showDate,
+                    "showTime": layoutService.showTime,
+                    "seatNumber": layoutService.bookedTickets[i]
+                };
+                $http.post("/MovieTicketBooking/addTicket", data)
+                    .then(function () {
+
+                        $location.path("/tickets");
+                    })
+            }
         }
     }
 });
 
 
 
-app.controller("registerController", function ($http, $scope, $location) {
+app.controller("registerController", function ($http, $scope, $location, growl, $timeout) {
     $scope.name = "";
     $scope.email = "";
     $scope.number = "";
@@ -195,7 +258,23 @@ app.controller("registerController", function ($http, $scope, $location) {
     }
 
     $scope.register = function () {
-        if ($scope.name && $scope.email && $scope.password && $scope.repassword && $scope.password == $scope.repassword) {
+        if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test($scope.email) == false) {
+            growl.error('Email is incorrect Please check it', {
+                title: 'Error',
+                ttl: 3000
+            });
+        } else if (/^\d{8,10}$/.test($scope.number) == false) {
+            growl.warning("Please enter valid phone number", {
+                title: "Invalid Phone Number",
+                ttl: 3000
+            });
+        } else if ($scope.password.localeCompare($scope.repassword) == 1 || $scope.password.localeCompare($scope.repassword) == -1) {
+            growl.warning("Password and Re-Password Do Not Match", {
+                title: "Password Mis-Match",
+                ttl: 3000
+            });
+        } else {
+
             var data = {
                 "name": $scope.name,
                 "email": $scope.email,
@@ -205,13 +284,22 @@ app.controller("registerController", function ($http, $scope, $location) {
             };
             $http.post("/MovieTicketBooking/addUser", data)
                 .then(function () {
-                    alert("Registered Successfully");
+                    $timeout(function () {
+                        growl.success('You Have Successfully Registered', {
+                            title: 'Registered',
+                            ttl: 2000
+                        });
+                    }, 500);
                     $location.path("/login");
                 }, function () {
-                    alert("Error registering");
+
+                    growl.error('There was an error while registering', {
+                        title: 'Registration Error',
+                        ttl: 2000
+                    });
+
                 })
-        } else {
-            alert("Fill the form properly");
+
         }
     }
 
@@ -219,25 +307,47 @@ app.controller("registerController", function ($http, $scope, $location) {
 
 
 
-app.controller("guestLoginController", function ($scope, $rootScope, $http, $location, layoutService) {
+app.controller("guestLoginController", function ($scope, $http, $location, layoutService, growl) {
     $scope.email = "";
+    $scope.credit = "";
+    $scope.cvv = "";
     $scope.checkOut = function () {
-        $rootScope.email = $scope.email;
-        for (var i = 0; i < layoutService.bookedTickets.length; i++) {
-            var data = {
-                "theatreMovieId": layoutService.theatreMovieId,
-                "email": $scope.email,
-                "date": layoutService.showDate,
-                "showTime": layoutService.showTime,
-                "seatNumber": layoutService.bookedTickets[i]
-            };
-            $http.post("/MovieTicketBooking/addTicket", data)
-                .then(function () {
-                    
-                    $location.path("/tickets");
-                },function(){
-                    alert("couldnt book the tickets");
-                })
+
+        if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test($scope.email) == false) {
+            growl.error('Email is incorrect Please check it', {
+                title: 'Error',
+                ttl: 3000
+            });
+        } else if (/^\d{16,19}$/.test($scope.credit) == false) {
+            growl.warning('Credit/Debit card details are incorrect', {
+                title: 'Error',
+                ttl: 3000
+            });
+        } else if (/^\d{3}$/.test($scope.cvv) == false) {
+            growl.warning('cvv details are incorrect', {
+                title: 'cvv incorrect',
+                ttl: 3000
+            });
+        } else {
+            for (var i = 0; i < layoutService.bookedTickets.length; i++) {
+                var data = {
+                    "theatreMovieId": layoutService.theatreMovieId,
+                    "email": $scope.email,
+                    "date": layoutService.showDate,
+                    "showTime": layoutService.showTime,
+                    "seatNumber": layoutService.bookedTickets[i]
+                };
+                $http.post("/MovieTicketBooking/addTicket", data)
+                    .then(function () {
+
+                        $location.path("/tickets");
+                    }, function () {
+                        growl.error("couldnt book the tickets", {
+                            title: "Tickets not booked",
+                            ttl: 300
+                        });
+                    })
+            }
         }
     }
 });
@@ -246,27 +356,26 @@ app.controller("guestLoginController", function ($scope, $rootScope, $http, $loc
 
 
 
-app.controller("moviesController", function ($scope, $http, $route, $routeParams, $location, controllerService, layoutService) {
-    
-    
+app.controller("moviesController", function ($scope, $http, $route, $routeParams, $location, controllerService, layoutService,growl) {
+
+
     layoutService.theatreId = $routeParams.theatreId;
     $scope.movies = [];
     $scope.genres = ["Action", "Adventure", "Comedy", "Crime", "Drama", "Historical", "Horror", "Mystery", "Romance", "Fiction", "Social", "Thriller"];
     var checked = [false, false, false, false, false, false, false, false, false, false, false, false];
     $scope.show = function (index) {
-        if(checked.indexOf(true)==-1){
+        if (checked.indexOf(true) == -1) {
             return true;
         }
         var temp = false;
-        for(var i=0;i<$scope.movies[index].genre.length;i++)
-        {
-            temp = temp || checked[$scope.movies[index].genre[i]-1]
+        for (var i = 0; i < $scope.movies[index].genre.length; i++) {
+            temp = temp || checked[$scope.movies[index].genre[i] - 1]
         }
         return temp;
     }
-    $scope.change =function(element){
+    $scope.change = function (element) {
         checked[element.$index] = !checked[element.$index];
-    } 
+    }
 
     $('#modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
@@ -279,8 +388,8 @@ app.controller("moviesController", function ($scope, $http, $route, $routeParams
     $scope.submitRating = function () {
         var rating = 0;
         var fieldSet = document.querySelector("fieldset");
-        
-        
+
+
         var movieId = fieldSet.getAttribute("id");
         var stars = fieldSet.querySelectorAll("input");
         for (var i = 0; i < stars.length; i++) {
@@ -297,14 +406,23 @@ app.controller("moviesController", function ($scope, $http, $route, $routeParams
                 .then(function (response) {
                     if (response.status == 200) {
                         $('#modal').modal("hide");
-                        alert("Successfully rated the movie");
+                        growl.success("Successfully rated the movie",{
+                            title:"rated successfully",
+                            ttl:3000
+                        });
                         $route.reload();
                     } else {
-                        alert("problem in rating the movie");
+                        growl.error("problem in rating the movie",{
+                            title:"Not rated",
+                            ttl:3000
+                        });
                     }
                 });
         } else {
-            alert("You didn't give any rating");
+            growl.warning("You didn't give any rating",{
+                title: "Warning",
+                ttl:3000
+            });
         }
     }
 
@@ -318,8 +436,8 @@ app.controller("moviesController", function ($scope, $http, $route, $routeParams
             showDate: reqDate
         })
         .then(function (response) {
-            
-            
+
+
             $scope.movies = response.data;
             for (var i = 0; i < $scope.movies.length; i++) {
                 $scope.movies[i].showTime.sort();
@@ -327,7 +445,7 @@ app.controller("moviesController", function ($scope, $http, $route, $routeParams
         });
 
     $scope.showLayout = function (time, id, name) {
-        
+
         layoutService.showTime = time;
         layoutService.theatreMovieId = id;
         layoutService.movieName = name;
@@ -339,10 +457,21 @@ app.controller("moviesController", function ($scope, $http, $route, $routeParams
 
 
 
+app.controller("navController", function ($scope, $route, layoutService, $window) {
+    $scope.loggedIn = $window.localStorage.loggedIn;
+    $scope.name = $window.localStorage.name;
+    $scope.checkLoggedIn = function () {
+        // console.log($scope.loggedIn != "true",$scope.loggedIn);
+        return $window.localStorage.loggedIn != "true";
+    }
+    $scope.getName = function () {
+        return $window.localStorage.name;
+    }
+});
 
 
-app.controller("theatreController", function ($scope, $http, controllerService, layoutService) {
 
+app.controller("theatreController", function ($scope, $http, controllerService, $route, layoutService, growl, growlMessages) {
 
 
     $scope.dates = [new Date()];
@@ -357,10 +486,18 @@ app.controller("theatreController", function ($scope, $http, controllerService, 
     $scope.dateSelect = $scope.dates[0];
 
     $scope.setDate = function (date) {
+        growlMessages.destroyAllMessages();
+        if ($scope.dateSelect != date) {
+            growl.info('Date is changed to ' + date.toISOString().substring(0, 10), {
+                title: 'Information',
+                ttl: 1000
+            });
+        }
         $scope.dateSelect = date;
         controllerService.dateSelect = date;
-        
-        
+
+
+
     };
 
     $scope.checkActive = function (date) {
@@ -373,7 +510,7 @@ app.controller("theatreController", function ($scope, $http, controllerService, 
     $scope.getTheatres = function () {
         $http.get("/MovieTicketBooking/userListTheatres")
             .then(function (response) {
-                
+
                 $scope.theatres = response.data;
                 layoutService.theatres = response.data;
             });
@@ -386,7 +523,10 @@ app.controller("theatreController", function ($scope, $http, controllerService, 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
         } else {
-            alert("Geolocation is not supported by this browser.")
+            growl.error("Geolocation is not supported by this browser.",{
+                title:"Error",
+                ttl:3000
+            });
         }
     }
 
@@ -398,16 +538,24 @@ app.controller("theatreController", function ($scope, $http, controllerService, 
     function showError(error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
-                alert("User denied the request for Geolocation.")
+                growl.error("User denied the request for Geolocation.",{
+                    ttl:3000
+                });
                 break;
             case error.POSITION_UNAVAILABLE:
-                alert("Location information is unavailable.")
+                growl.error("Location information is unavailable.",{
+                    ttl:3000
+                })
                 break;
             case error.TIMEOUT:
-                alert("The request to get user location timed out.")
+                growl.error("The request to get user location timed out.",{
+                    ttl:3000
+                })
                 break;
             case error.UNKNOWN_ERROR:
-                alert("An unknown error occurred.")
+                growl.error("An unknown error occurred.",{
+                    ttl:3000
+                })
                 break;
         }
     }
@@ -429,19 +577,20 @@ app.controller("theatreController", function ($scope, $http, controllerService, 
 
     //Function to sort theatres by distance
     $scope.sortyByDistance = function () {
+
         var ul = document.querySelector("#theatres")
         var new_ul = ul.cloneNode(false);
 
         // Add all lis to an array
         var lis = [];
         for (var i = ul.childNodes.length; i--;) {
-            if (ul.childNodes[i].nodeName === 'LI')
+            if (ul.childNodes[i].nodeName === 'DIV')
                 lis.push(ul.childNodes[i]);
         }
 
         // Sort the list in ascending order
         lis.sort(function (a, b) {
-            
+
             return $scope.getDistance(a.getAttribute('data-lat'), a.getAttribute('data-long'), $scope.lat, $scope.long) - $scope.getDistance(b.getAttribute('data-lat'), b.getAttribute('data-long'), $scope.lat, $scope.long);
         });
 
@@ -465,7 +614,7 @@ app.controller("theatreController", function ($scope, $http, controllerService, 
 
 
 
-app.controller("newLayoutController", function ($scope, $location, $http, layoutService) {
+app.controller("newLayoutController", function ($scope, $location, $http, layoutService, growl) {
 
 
     var data = {
@@ -478,11 +627,9 @@ app.controller("newLayoutController", function ($scope, $location, $http, layout
 
         $http.post("/MovieTicketBooking/bookedTickets", data)
             .then(function (response) {
-                
-                
                 for (var i = 0; i < response.data.length; i++) {
                     var row = response.data[i][0].charCodeAt(0) - 65;
-                    var col = response.data[i].substring(1);
+                    var col = response.data[i].substring(1) - 1;
                     $scope.seats[row][col].booked = true;
                 }
 
@@ -561,12 +708,16 @@ app.controller("newLayoutController", function ($scope, $location, $http, layout
         if (checkedTickets.length > 0) {
             $http.post("/MovieTicketBooking/bookedTickets", data)
                 .then(function (response) {
-                    
+
                     for (var i = 0; i < response.data.length; i++) {
                         var row = response.data[i][0].charCodeAt(0) - 65;
                         var col = response.data[i].substring(1);
                         if ($scope.seats[row][col].check) {
-                            alert("Selected Seats are already booked. Please select other seats");
+
+                            growl.error("Selected Seats are already booked. Please select other seats", {
+                                title: 'ALREADY BOOKED',
+                                ttl: 2000
+                            });
                             bookedTickets();
                             $scope.removeAllCheck();
                             return;
@@ -576,7 +727,12 @@ app.controller("newLayoutController", function ($scope, $location, $http, layout
                     $location.path("/checkout");
                 });
         } else {
-            alert("No seats selected");
+
+
+            growl.warning("No seats selected", {
+                title: 'SELECT SEATS',
+                ttl: 2000
+            });
         }
     }
 

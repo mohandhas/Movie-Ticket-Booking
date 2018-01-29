@@ -1,15 +1,17 @@
 <div class="col-sm-4">
 
 </div>
+<div growl></div>
 <div class="col-sm-4" ng-controller="userCheckoutController">
     <div class="form-group">
         <label for="card">Card Number</label>
-        <input type="text" name="card" class="form-control" id="card" aria-describedby="card Help" placeholder="Enter card Number"
+        <input type="text" name="card" ng-model="card" class="form-control" id="card" aria-describedby="card Help" placeholder="Enter card Number"
             required>
     </div>
     <div class="form-group">
         <label for="CVV">CVV</label>
-        <input type="text" name="cvv" class="form-control sm" id="cvv" aria-describedby="cvv Help" placeholder="Enter card cvv" required>
+        <input type="text" name="cvv" ng-model="cvv" class="form-control sm" id="cvv" aria-describedby="cvv Help" placeholder="Enter card cvv"
+            required>
     </div>
     <div class="col-sm-4"></div>
     <div class="col-sm-8">
