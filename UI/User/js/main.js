@@ -312,8 +312,9 @@ app.controller("guestLoginController", function ($scope, $http, $location, layou
     $scope.credit = "";
     $scope.cvv = "";
     $scope.checkOut = function () {
-
+        
         if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test($scope.email) == false) {
+            console.log("okkokok");
             growl.error('Email is incorrect Please check it', {
                 title: 'Error',
                 ttl: 3000
