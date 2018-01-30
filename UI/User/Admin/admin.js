@@ -1,7 +1,7 @@
-var app = angular.module('module1', ['ngRoute']);
+var app = angular.module('module1', ['ngRoute', 'angular-growl']);
 
 //control for Login
-app.controller('checkLogin', function ($scope, $window, $location, $rootScope, $http) {
+app.controller('checkLogin', function ($scope, $window, $location, $rootScope, $http, growl) {
     $window.sessionStorage.removeItem("userName");
     $scope.userName = null;
     $scope.userPassword = "";
@@ -32,10 +32,17 @@ app.controller('checkLogin', function ($scope, $window, $location, $rootScope, $
                 $window.sessionStorage.setItem("userName", $scope.userName);
                 $window.location.href = 'home.html';
             } else {
-                $window.alert("wrong id or password");
+                growl.warning("Wrong id or password", {
+                    title: 'Admin Login',
+                    ttl: 1500
+                });
+
             }
         }, function () {
-            $window.alert("Wrong id or password");
+            growl.warning('Wrong id or password', {
+                title: 'Admin Login',
+                ttl: 1500
+            });
         });
     }
 
@@ -44,7 +51,7 @@ app.controller('checkLogin', function ($scope, $window, $location, $rootScope, $
 
 
 //control for adding movie in database
-app.controller('addMovie', function ($scope, $window, $http, addmov) {
+app.controller('addMovie', function ($scope, $window, $http, addmov, growl) {
     $scope.movie;
     $scope.duration;
     $scope.genre = [];
@@ -52,13 +59,22 @@ app.controller('addMovie', function ($scope, $window, $http, addmov) {
 
         var list = document.querySelectorAll("input[name^='radios[']:checked");
         if ($scope.movie == null || $scope.movie == "")
-            $window.alert("Enter Movie name First");
+            growl.warning("Enter Movie name First", {
+                ttl: 1500
+            });
+
         else if ($scope.duration == null || $scope.duration == "")
-            $window.alert("Add Duration");
+            growl.warning("Enter Duration Time", {
+                ttl: 1500
+            });
         else if ($scope.duartaion < 1 || $scope.duration > 500)
-            $window.alert("Duration Between 1-500");
+            growl.warning("Duration Time Between 1-500 Mins", {
+                ttl: 1500
+            });
         else if (list.length == 0)
-            $window.alert("Select Gendre first");
+            growl.warning("Select genre", {
+                ttl: 1500
+            });
         else {
             for (var i = 0; i < list.length; i++)
                 $scope.genre.push(list[i].value);
@@ -85,12 +101,17 @@ app.controller('addMovie', function ($scope, $window, $http, addmov) {
 
 
 //Service for adding movie in database
-app.service('addmov', ['$http', '$window', '$route', function ($http, $window, $route) {
+app.service('addmov', ['$http', '$window', '$route', 'growl', function ($http, $window, $route, growl) {
     this.addmovi = function (data) {
         $http.post('/MovieTicketBooking/addMovie', data).success(function () {
-            $window.alert('Successfull');
+            growl.success("Successfully Added", {
+                ttl: 1500
+            });
+            $route.reload();
         }).error(function () {
-            $window.alert('Data Already Exist');
+            growl.error("movie Already Exist", {
+                ttl: 1500
+            });
             $route.reload();
 
         })
@@ -172,10 +193,10 @@ app.service('dashboardService', ['$http', function ($http) {
             $http.post('/MovieTicketBooking/getMovieInTheatre', data).success(function (response) {
                 return (response);
             })
-            .error(function (response, status) {
+                .error(function (response, status) {
 
-                return (status);
-            })
+                    return (status);
+                })
         );
 
     }
@@ -184,35 +205,51 @@ app.service('dashboardService', ['$http', function ($http) {
             $http.post('/MovieTicketBooking/getTicketCount', data).success(function (response) {
                 return (response);
             })
-            .error(function (response, status) {
-                return (status);
-            })
+                .error(function (response, status) {
+                    return (status);
+                })
         );
     }
 }]);
 
 
 //control for adding Theatre in database
-app.controller('addTheatre', function ($scope, $window, $http, addThe) {
+app.controller('addTheatre', function ($scope, $window, $http, addThe, growl) {
     $scope.theatre;
     $scope.latitude;
     $scope.longitude;
     $scope.screen;
     $scope.addTheatres = function () {
         if ($scope.theatre == null || $scope.theatre == "")
-            $window.alert("Add Theatre name first");
+            growl.warning("Add Theatre name first", {
+                ttl: 1500
+            });
+
         else if ($scope.latitude == null || $scope.latitude == "")
-            $window.alert("Add latitude value first");
+            growl.warning("Add latitude value first", {
+                ttl: 1500
+            });
+
         else if ($scope.latitude < 0.0000000001 || $scope.latitude > 100)
-            $window.alert("Latitude value must be between 0-100");
+            growl.warning("Latitude value must be between 0-100", {
+                ttl: 1500
+            });
         else if ($scope.longitude == null || $scope.longitude == "")
-            $window.alert("Add longitude value first");
+            growl.warning("Add longitude value first", {
+                ttl: 1500
+            });
         else if ($scope.longitude < 0.0000000001 || $scope.longitude > 100)
-            $window.alert("longitude value must be between 0-100");
+            growl.warning("longitude value must be between 0-100", {
+                ttl: 1500
+            });
         else if ($scope.screen == null || $scope.screen == "")
-            $window.alert("Add Screen Value");
+            growl.warning("Add Screen Value", {
+                ttl: 1500
+            });
         else if ($scope.screen < 0 || $scope.screen > 10)
-            $window.alert("Screen value must between 1-10");
+            growl.warning("Screen value must between 1-10", {
+                ttl: 1500
+            });
         else {
 
 
@@ -235,13 +272,17 @@ app.controller('addTheatre', function ($scope, $window, $http, addThe) {
 
 
 //Service for adding Theatre in database
-app.service('addThe', ['$http', '$window', '$route', function ($http, $window, $route) {
+app.service('addThe', ['$http', '$window', '$route', 'growl', function ($http, $window, $route, growl) {
     this.addThea = function (data) {
 
         $http.post('/MovieTicketBooking/addTheatre', data).success(function () {
-            $window.alert('Succseefull');
+            growl.success("Theatre Successfully Added", {
+                ttl: 1500
+            });
         }).error(function () {
-            $window.alert('Already Exist');
+            growl.error("Already Exist", {
+                ttl: 1500
+            });
             $route.reload();
         });
     }
@@ -267,12 +308,16 @@ app.controller('addAddOns', function ($scope, $http, addOns) {
 
 
 //Service for adding AddOns in database
-app.service('addOns', ['$http', '$window', '$route', function ($http, $window, $route) {
+app.service('addOns', ['$http', '$window', '$route', 'growl', function ($http, $window, $route, growl) {
     this.addAddValue = function (data) {
         $http.post('/MovieTicketBooking/addAddons', data).success(function () {
-            $window.alert('Succseefull');
+            growl.warning('AddOns Added', {
+                ttl: 1500
+            });
         }).error(function () {
-            $window.alert('Succseefull');
+            growl.error("Already Exist", {
+                ttl: 1500
+            });
             $route.reload();
         });
     }
@@ -280,7 +325,7 @@ app.service('addOns', ['$http', '$window', '$route', function ($http, $window, $
 }]);
 
 //control for MovieTheater in database
-app.controller('movieTheatre', function ($rootScope, $route, $window, $scope, $http, movThe) {
+app.controller('movieTheatre', function ($rootScope, $route, $window, $scope, $http, movThe, growl) {
     //Fetching movie Detail
 
     $scope.movData = movThe.getMov().then(function (data) {
@@ -303,17 +348,29 @@ app.controller('movieTheatre', function ($rootScope, $route, $window, $scope, $h
     $scope.addMovieTheatre = function () {
         $rootScope.dateAdd = 24 * 60 * 60 * 1000;
         if ($scope.theatreSelect == null || $scope.theatreSelect == "")
-            $window.alert("Select Theatre First");
-        else if ($scope.movieSelect.name == null || $scope.movieSelect.name == "")
-            $window.alert("Select Movie First");
+            growl.warning("Select Theatre First", {
+                ttl: 1500
+            });
+        else if ($scope.movieSelect == null || $scope.movieSelect == "")
+            growl.warning("Select Movie First", {
+                ttl: 1500
+            });
         else if ($scope.screenSelect == null || $scope.screenSelect == "")
-            $window.alert("Select Screen First");
-        else if ($scope.datefrom.getTime() == null || $scope.datefrom.getTime() == "")
-            $window.alert("Select Date From First");
-        else if ($scope.dateto.getTime() == null || $scope.dateto.getTime() == "")
-            $window.alert("Select Date to First");
+            growl.warning("Select Screen First", {
+                ttl: 1500
+            });
+        else if ($scope.datefrom == null || $scope.datefrom == "")
+            growl.warning("Enter Date from  First", {
+                ttl: 1500
+            });
+        else if ($scope.dateto == null || $scope.dateto == "")
+            growl.warning("Enter Date to  First", {
+                ttl: 1500
+            });
         else if ($scope.timefrom == null || $scope.timefrom == "")
-            $window.alert("Select Time From First");
+            growl.warning("Enter Time from  First", {
+                ttl: 1500
+            });
         else {
             //formating all date and time in theatre
             $scope.newdatefrom = new Date(new Date($scope.datefrom.getTime() + $rootScope.dateAdd));
@@ -347,7 +404,7 @@ app.controller('movieTheatre', function ($rootScope, $route, $window, $scope, $h
 
 
 //Service for MovieTheater in database
-app.service('movThe', ['$http', '$window', function ($http, $window) {
+app.service('movThe', ['$http', '$window', 'growl', function ($http, $window, growl) {
     //fetch detail of all movie
     this.getMov = function () {
         return (
@@ -376,10 +433,14 @@ app.service('movThe', ['$http', '$window', function ($http, $window) {
         return (
             $http.post('/MovieTicketBooking/addMovieInTheatre', data).success(function (response) {
 
-                $window.alert('Successfull')
+                growl.success("Succesfully Added", {
+                    ttl: 1500
+                });
                 return response;
             }).error(function () {
-                $window.alert("Time Mismatching");
+                growl.warning("Time Mismatching", {
+                    ttl: 1500
+                });
                 return response;
             })
         );
@@ -387,11 +448,12 @@ app.service('movThe', ['$http', '$window', function ($http, $window) {
 
 }]);
 //For All Movie 
-app.controller('getAllMovie', function ($scope, $http, $route, fetchMovie) {
+app.controller('getAllMovie', function ($scope, $http, $route, growl, fetchMovie) {
     $scope.id;
     $scope.name;
     $scope.duration;
     $scope.isHidden = true;
+    console.log("hello");
     $scope.dataMov = fetchMovie.getAll().then(function (data) {
         $scope.details = data.data;
 
@@ -432,7 +494,7 @@ app.controller('getAllMovie', function ($scope, $http, $route, fetchMovie) {
     }
 });
 
-app.service('fetchMovie', ['$http', function ($http) {
+app.service('fetchMovie', ['$http', 'growl', function ($http, growl) {
     this.getAll = function () {
         return (
 
@@ -447,19 +509,28 @@ app.service('fetchMovie', ['$http', function ($http) {
     this.deleteMov = function (id) {
         return (
             $http.delete("/MovieTicketBooking/deleteMovie/" + id).then(function (response) {
-
+                growl.success("Movie Deleted", {
+                    ttl: 1500
+                });
                 return response;
             }, function (response) {
-                alert("Can't Delete");
+                growl.error("Can't Dalete Movie", {
+                    ttl: 1500
+                });
+
                 return response;
             }));
 
     }
     this.doUpdateMovie = function (data) {
         $http.put("/MovieTicketBooking/editMovie", data).then(function () {
-            alert("Movie Updated");
+            growl.success("Movie Updated", {
+                ttl: 1500
+            });
         }, function () {
-            alert("Cant Update");
+            growl.error("Can't update Movie", {
+                ttl: 1500
+            });
         })
 
     }
@@ -505,3 +576,6 @@ app.config(function ($routeProvider, $locationProvider) {
         requireBase: false
     });
 })
+app.config(['growlProvider', function (growlProvider) {
+    growlProvider.globalDisableCountDown(true);
+}]);
