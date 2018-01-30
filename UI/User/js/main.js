@@ -478,7 +478,7 @@ app.controller("theatreController", function ($scope, $http, controllerService, 
     $scope.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     for (var i = 0; i < 3; i++) {
         var temp = new Date();
-        temp.setDate($scope.dates[$scope.dates.length - 1].getDate() + 1);
+        temp.setTime($scope.dates[$scope.dates.length - 1].getTime() + (24 * 60 * 60 * 1000));
         $scope.dates.push(temp);
     }
 
